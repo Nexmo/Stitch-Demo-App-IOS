@@ -3,18 +3,25 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 50;
+	objectVersion = 48;
 	objects = {
 
 /* Begin PBXBuildFile section */
+		45449D5F20D1766C00EF34E2 /* ConversationsTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45449D5E20D1766C00EF34E2 /* ConversationsTableViewController.swift */; };
+		45E9820820D18A07003B6C7B /* ChatTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45E9820720D18A07003B6C7B /* ChatTableViewController.swift */; };
 		45F4524A20CEFF880051294A /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45F4524920CEFF880051294A /* AppDelegate.swift */; };
 		45F4524C20CEFF880051294A /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45F4524B20CEFF880051294A /* ViewController.swift */; };
 		45F4524F20CEFF880051294A /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 45F4524D20CEFF880051294A /* Main.storyboard */; };
 		45F4525120CEFF8A0051294A /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 45F4525020CEFF8A0051294A /* Assets.xcassets */; };
 		45F4525420CEFF8A0051294A /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 45F4525220CEFF8A0051294A /* LaunchScreen.storyboard */; };
+		45F6643B20D12756002D8F6E /* Nexmo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45F6643A20D12756002D8F6E /* Nexmo.swift */; };
+		E54617E7B6278DFA36047B6E /* Pods_Stitch_Demo.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BBC2D0A0FDE845E50CB5E408 /* Pods_Stitch_Demo.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		0139DBADC6A57254B282D395 /* Pods-Stitch-Demo.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Stitch-Demo.release.xcconfig"; path = "Pods/Target Support Files/Pods-Stitch-Demo/Pods-Stitch-Demo.release.xcconfig"; sourceTree = "<group>"; };
+		45449D5E20D1766C00EF34E2 /* ConversationsTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ConversationsTableViewController.swift; sourceTree = "<group>"; };
+		45E9820720D18A07003B6C7B /* ChatTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatTableViewController.swift; sourceTree = "<group>"; };
 		45F4524620CEFF880051294A /* Stitch-Demo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Stitch-Demo.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		45F4524920CEFF880051294A /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		45F4524B20CEFF880051294A /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
@@ -22,6 +29,9 @@
 		45F4525020CEFF8A0051294A /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		45F4525320CEFF8A0051294A /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		45F4525520CEFF8A0051294A /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		45F6643A20D12756002D8F6E /* Nexmo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Nexmo.swift; sourceTree = "<group>"; };
+		BBC2D0A0FDE845E50CB5E408 /* Pods_Stitch_Demo.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Stitch_Demo.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		D5CF9A012860EB8F110794C4 /* Pods-Stitch-Demo.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Stitch-Demo.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Stitch-Demo/Pods-Stitch-Demo.debug.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -29,17 +39,29 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				E54617E7B6278DFA36047B6E /* Pods_Stitch_Demo.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		0CDA5E6FFE2CC5C37DA197FC /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				D5CF9A012860EB8F110794C4 /* Pods-Stitch-Demo.debug.xcconfig */,
+				0139DBADC6A57254B282D395 /* Pods-Stitch-Demo.release.xcconfig */,
+			);
+			name = Pods;
+			sourceTree = "<group>";
+		};
 		45F4523D20CEFF880051294A = {
 			isa = PBXGroup;
 			children = (
 				45F4524820CEFF880051294A /* Stitch-Demo */,
 				45F4524720CEFF880051294A /* Products */,
+				0CDA5E6FFE2CC5C37DA197FC /* Pods */,
+				873ECD6C37B25FCF769F7DDF /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -54,14 +76,25 @@
 		45F4524820CEFF880051294A /* Stitch-Demo */ = {
 			isa = PBXGroup;
 			children = (
+				45F6643A20D12756002D8F6E /* Nexmo.swift */,
 				45F4524920CEFF880051294A /* AppDelegate.swift */,
 				45F4524B20CEFF880051294A /* ViewController.swift */,
+				45449D5E20D1766C00EF34E2 /* ConversationsTableViewController.swift */,
+				45E9820720D18A07003B6C7B /* ChatTableViewController.swift */,
 				45F4524D20CEFF880051294A /* Main.storyboard */,
 				45F4525020CEFF8A0051294A /* Assets.xcassets */,
 				45F4525220CEFF8A0051294A /* LaunchScreen.storyboard */,
 				45F4525520CEFF8A0051294A /* Info.plist */,
 			);
 			path = "Stitch-Demo";
+			sourceTree = "<group>";
+		};
+		873ECD6C37B25FCF769F7DDF /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				BBC2D0A0FDE845E50CB5E408 /* Pods_Stitch_Demo.framework */,
+			);
+			name = Frameworks;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -71,9 +104,11 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 45F4525820CEFF8A0051294A /* Build configuration list for PBXNativeTarget "Stitch-Demo" */;
 			buildPhases = (
+				35B99D8D9C3E48C0C782F677 /* [CP] Check Pods Manifest.lock */,
 				45F4524220CEFF880051294A /* Sources */,
 				45F4524320CEFF880051294A /* Frameworks */,
 				45F4524420CEFF880051294A /* Resources */,
+				272D21B0964E02F7E72AEBEC /* [CP] Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
@@ -96,11 +131,12 @@
 				TargetAttributes = {
 					45F4524520CEFF880051294A = {
 						CreatedOnToolsVersion = 9.4;
+						ProvisioningStyle = Automatic;
 					};
 				};
 			};
 			buildConfigurationList = 45F4524120CEFF880051294A /* Build configuration list for PBXProject "Stitch-Demo" */;
-			compatibilityVersion = "Xcode 9.3";
+			compatibilityVersion = "Xcode 8.0";
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
 			knownRegions = (
@@ -130,13 +166,71 @@
 		};
 /* End PBXResourcesBuildPhase section */
 
+/* Begin PBXShellScriptBuildPhase section */
+		272D21B0964E02F7E72AEBEC /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+				"${SRCROOT}/Pods/Target Support Files/Pods-Stitch-Demo/Pods-Stitch-Demo-frameworks.sh",
+				"${BUILT_PRODUCTS_DIR}/Alamofire/Alamofire.framework",
+				"${PODS_ROOT}/Nexmo-Stitch/Carthage/Build/iOS/Stitch.framework",
+				"${PODS_ROOT}/Nexmo-Stitch/Carthage/Build/iOS/Stitch.framework.dSYM",
+				"${BUILT_PRODUCTS_DIR}/NexmoGRDB.swift/GRDB.framework",
+				"${PODS_ROOT}/NexmoWebRTC/WebRTC.framework",
+				"${BUILT_PRODUCTS_DIR}/RxSwift/RxSwift.framework",
+				"${BUILT_PRODUCTS_DIR}/Socket.IO-Client-Swift/SocketIO.framework",
+				"${BUILT_PRODUCTS_DIR}/Starscream/Starscream.framework",
+				"${BUILT_PRODUCTS_DIR}/SwiftyJSON/SwiftyJSON.framework",
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputPaths = (
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Alamofire.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Stitch.framework",
+				"${DWARF_DSYM_FOLDER_PATH}/Stitch.framework.dSYM",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/GRDB.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/WebRTC.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/RxSwift.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/SocketIO.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Starscream.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/SwiftyJSON.framework",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-Stitch-Demo/Pods-Stitch-Demo-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		35B99D8D9C3E48C0C782F677 /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-Stitch-Demo-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+/* End PBXShellScriptBuildPhase section */
+
 /* Begin PBXSourcesBuildPhase section */
 		45F4524220CEFF880051294A /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 				45F4524C20CEFF880051294A /* ViewController.swift in Sources */,
+				45F6643B20D12756002D8F6E /* Nexmo.swift in Sources */,
+				45449D5F20D1766C00EF34E2 /* ConversationsTableViewController.swift in Sources */,
 				45F4524A20CEFF880051294A /* AppDelegate.swift in Sources */,
+				45E9820820D18A07003B6C7B /* ChatTableViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -270,23 +364,22 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 11.4;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				SDKROOT = iphoneos;
-				SWIFT_COMPILATION_MODE = wholemodule;
-				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";
 				VALIDATE_PRODUCT = YES;
 			};
 			name = Release;
 		};
 		45F4525920CEFF8A0051294A /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = D5CF9A012860EB8F110794C4 /* Pods-Stitch-Demo.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = E37FZSUGQP;
+				ENABLE_BITCODE = NO;
 				INFOPLIST_FILE = "Stitch-Demo/Info.plist";
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/Frameworks",
-				);
+				IPHONEOS_DEPLOYMENT_TARGET = 11.4;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "com.vonage.garage.Stitch-Demo";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 4.0;
@@ -296,15 +389,15 @@
 		};
 		45F4525A20CEFF8A0051294A /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 0139DBADC6A57254B282D395 /* Pods-Stitch-Demo.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = E37FZSUGQP;
+				ENABLE_BITCODE = NO;
 				INFOPLIST_FILE = "Stitch-Demo/Info.plist";
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/Frameworks",
-				);
+				IPHONEOS_DEPLOYMENT_TARGET = 11.4;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "com.vonage.garage.Stitch-Demo";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 4.0;
