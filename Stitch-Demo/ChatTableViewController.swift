@@ -12,6 +12,7 @@ import Stitch
 class ChatTableViewController: UIViewController, UITextFieldDelegate {
 
     var conversation: Conversation?
+    var constraints:[NSLayoutConstraint] = []
     
     @IBOutlet weak var tableView: UITableView!
     var containerViewBottomAnchor: NSLayoutConstraint?
@@ -28,25 +29,29 @@ class ChatTableViewController: UIViewController, UITextFieldDelegate {
     lazy var inputContainerView: UIView = {
         let containerView = UIView()
         containerView.frame = CGRect(x: 0, y: 0, width: self.view.frame.width, height: 50)
-        containerView.backgroundColor = UIColor.white
+//        containerView.backgroundColor = UIColor.green
+    
         
         let sendButton = UIButton(type: .system)
         sendButton.setTitle("Send", for: UIControlState())
         sendButton.translatesAutoresizingMaskIntoConstraints = false
         sendButton.addTarget(self, action: #selector(handleSend), for: .touchUpInside)
         containerView.addSubview(sendButton)
+        
         //x,y,w,h
-        sendButton.rightAnchor.constraint(equalTo: containerView.rightAnchor).isActive = true
-        sendButton.centerYAnchor.constraint(equalTo: containerView.centerYAnchor).isActive = true
-        sendButton.widthAnchor.constraint(equalToConstant: 80).isActive = true
-        sendButton.heightAnchor.constraint(equalTo: containerView.heightAnchor).isActive = true
+        constraints.append(sendButton.rightAnchor.constraint(equalTo: containerView.rightAnchor))
+        constraints.append(sendButton.centerYAnchor.constraint(equalTo: containerView.centerYAnchor))
+        constraints.append(sendButton.widthAnchor.constraint(equalToConstant: 80))
+        constraints.append(sendButton.heightAnchor.constraint(equalTo: containerView.heightAnchor))
         
         containerView.addSubview(self.inputTextField)
         //x,y,w,h
-        self.inputTextField.leftAnchor.constraint(equalTo: containerView.leftAnchor, constant: 8).isActive = true
-        self.inputTextField.centerYAnchor.constraint(equalTo: containerView.centerYAnchor).isActive = true
-        self.inputTextField.rightAnchor.constraint(equalTo: sendButton.leftAnchor).isActive = true
-        self.inputTextField.heightAnchor.constraint(equalTo: containerView.heightAnchor).isActive = true
+      
+
+        constraints.append(self.inputTextField.leftAnchor.constraint(equalTo: containerView.leftAnchor, constant: 8))
+        constraints.append(self.inputTextField.centerYAnchor.constraint(equalTo: containerView.centerYAnchor))
+        constraints.append(self.inputTextField.rightAnchor.constraint(equalTo: sendButton.leftAnchor))
+        constraints.append(self.inputTextField.heightAnchor.constraint(equalTo: containerView.heightAnchor))
         
         return containerView
     }()
@@ -60,8 +65,10 @@ class ChatTableViewController: UIViewController, UITextFieldDelegate {
         
         setupInputComponents()
         setupKeyboardObservers()
+        activateConstraints()
         
         
+    
         // listen for messages
         conversation!.events.newEventReceived.subscribe(onSuccess: { event in
             print("event \(event)")
@@ -88,6 +95,14 @@ class ChatTableViewController: UIViewController, UITextFieldDelegate {
     }
     
     @objc func handleSend() {
+        do {
+            // send method
+            try conversation?.send(self.inputTextField.text!)
+            
+        } catch let error {
+            print(error)
+        }
+        tableView.reloadData()
         self.inputTextField.text = nil
         self.view.endEditing(true)
 
@@ -113,44 +128,53 @@ class ChatTableViewController: UIViewController, UITextFieldDelegate {
     
     func setupInputComponents() {
         let containerView = UIView()
-        containerView.backgroundColor = UIColor.white
+//        containerView.backgroundColor = UIColor.purple
         containerView.translatesAutoresizingMaskIntoConstraints = false
         
         view.addSubview(containerView)
         
         //ios9 constraint anchors
         //x,y,w,h
-        containerView.leftAnchor.constraint(equalTo: view.leftAnchor).isActive = true
+        
+        constraints.append(containerView.leftAnchor.constraint(equalTo: view.leftAnchor))
         
         containerViewBottomAnchor = containerView.bottomAnchor.constraint(equalTo: view.bottomAnchor)
-        containerViewBottomAnchor?.isActive = true
+        constraints.append(containerViewBottomAnchor!)
+//        containerViewBottomAnchor?.isActive = true
         
-        containerView.widthAnchor.constraint(equalTo: view.widthAnchor).isActive = true
-        containerView.heightAnchor.constraint(equalToConstant: 50).isActive = true
+        constraints.append(containerView.widthAnchor.constraint(equalTo: view.widthAnchor))
+        constraints.append(containerView.heightAnchor.constraint(equalToConstant: 50))
         containerView.addSubview(inputContainerView)
-
+    }
+    func deactivateConstraints() {
+        for constraint in constraints {
+            constraint.isActive = false
+        }
+    }
+    func activateConstraints() {
+        
+        for constraint in constraints {
+            constraint.isActive = true
+        }
     }
     
+    override func willAnimateRotation(to toInterfaceOrientation: UIInterfaceOrientation, duration: TimeInterval) {
+        print("willAnimateRotation", toInterfaceOrientation)
+//        self.view.setNeedsUpdateConstraints()
+        self.view.removeConstraints(constraints)
+        deactivateConstraints()
+        self.view.addConstraints(constraints)
+        activateConstraints()
+    }
     
+   
+    
+   
+
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
     }
-
-   
-    
-
-   
-
-    /*
-    // MARK: - Navigation
-
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        // Get the new view controller using segue.destinationViewController.
-        // Pass the selected object to the new view controller.
-    }
-    */
 
 }
 
@@ -159,7 +183,6 @@ extension ChatTableViewController: UITableViewDelegate, UITableViewDataSource {
     // MARK: - Table view data source
     
     func numberOfSections(in tableView: UITableView) -> Int {
-        // #warning Incomplete implementation, return the number of sections
         return 1
     }
     
@@ -170,12 +193,46 @@ extension ChatTableViewController: UITableViewDelegate, UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath)
+        cell.backgroundColor = UIColor.white
+        cell.accessoryType = UITableViewCellAccessoryType.none
+
+        let event = conversation?.events[indexPath.row]
+        switch event {
+        case is TextEvent:
+            let textEvent = (event as! TextEvent)
+            //Is this how we get the seen receipt?
+            let receipt = textEvent.receiptForMember(textEvent.fromMember!)
+            if (receipt != nil) {
+                if (receipt?.state == ReceiptRecord.State.seen) {
+                    cell.accessoryType = UITableViewCellAccessoryType.checkmark
+                }
+            }
+            
+            cell.textLabel?.text = textEvent.text
+            cell.detailTextLabel?.text = (textEvent.from?.name)! + " " + (event?.createDate.description)!
+            break
+        case is MediaEvent:
+//            let mediaEvent = (event as! MediaEvent)
+            break
+        case is MemberJoinedEvent:
+            let memberJoinedEvent = (event as! MemberJoinedEvent)
+            cell.textLabel?.text =  (memberJoinedEvent.from?.name)! + " joined " +  (memberJoinedEvent.createDate.description)
+            break
+        case is MemberInvitedEvent:
+            let memberInvited = (event as! MemberInvitedEvent)
+            cell.textLabel?.text =  (memberInvited.from?.name)! + " invited " +  (memberInvited.createDate.description)
+            break
+        case is MemberLeftEvent:
+            let memberLeft = (event as! MemberLeftEvent)
+            cell.textLabel?.text =  (memberLeft.from?.name)! + " left " +  (memberLeft.createDate.description)
+            break
         
-        let message = conversation?.events[indexPath.row] as? TextEvent
-        
-        cell.textLabel?.text = message?.text
-        //        cell.detailTextLabel?.text
-        
+        default:
+            cell.textLabel?.text = ""
+        }
+
+//        print("allReceipts",event?.allReceipts)
+
         return cell;
     }
 }

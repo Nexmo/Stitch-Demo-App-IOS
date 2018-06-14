@@ -9,7 +9,7 @@
 import UIKit
 import SwiftyJSON
 class Nexmo: NSObject {
-    let baseURL = "https://2a2e1dd6.ngrok.io/api"
+    let baseURL = "https://651a0d0e.ngrok.io/api"
     
     static let shared = Nexmo()
     
@@ -18,7 +18,7 @@ class Nexmo: NSObject {
         
         let task = URLSession.shared.dataTask(with: URL(string: urlString)!) { (data, response, error) in
             if error != nil {
-                completion(error, nil)
+                completion(error, JSON.null)
             } else {
                 if let usableData = data {
                     let json = try! JSON(data: usableData)
@@ -34,7 +34,7 @@ class Nexmo: NSObject {
 
         let task = URLSession.shared.dataTask(with: URL(string: urlString)!) { (data, response, error) in
             if error != nil {
-                completion(error, nil)
+                completion(error, JSON.null)
             } else {
                 if let usableData = data {
                     let json = try! JSON(data: usableData)

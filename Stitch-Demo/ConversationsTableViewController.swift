@@ -17,6 +17,7 @@ class ConversationsTableViewController: UITableViewController {
     let client: ConversationClient = {
         return ConversationClient.instance
     }()
+    var selectedConversation:Conversation?
     
     
     override func viewDidLoad() {
@@ -26,12 +27,12 @@ class ConversationsTableViewController: UITableViewController {
         tableView.reloadData()
         
         self.navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(createConversation(_:)))
+        
+//        newConversation("Test")
     }
     
     override func viewWillAppear(_ animated: Bool) {
-        if let user = self.client.account.user {
-            self.navigationItem.title = user.name
-        }
+        self.navigationItem.title = "Conversations"
         super.viewWillAppear(animated)
     }
 
@@ -44,10 +45,7 @@ class ConversationsTableViewController: UITableViewController {
         
         alert.addAction(UIAlertAction(title: "Done", style: .default, handler: { (action) in
             let textField = alert.textFields![0] as UITextField
-            _ = self.client.conversation.new(textField.text!, withJoin: true).subscribe(onError: { error in
-                print(error)
-                print("DEMO - chat creation unsuccessful with \(error.localizedDescription)")
-            })
+            self.newConversation(textField.text!)
         }))
         alert.addTextField { (textField) in
             textField.placeholder = "Enter name for conversation"
@@ -56,6 +54,20 @@ class ConversationsTableViewController: UITableViewController {
         
     }
 
+    func newConversation(_ text:String) {
+        self.client.conversation.new(with: text, shouldJoin: true, { (conversation) in
+            print("success")
+            DispatchQueue.main.async {
+                self.selectedConversation = conversation
+                self.sortedConversations = self.client.conversation.conversations.sorted(by: { $0.creationDate.compare($1.creationDate) == .orderedDescending })
+                self.tableView.reloadData()
+            }
+        }, onError: { (error) in
+            print("error", error)
+        }, onComplete: {
+            print("done")
+        })
+    }
     // MARK: - Table view data source
 
     override func numberOfSections(in tableView: UITableView) -> Int {
@@ -82,9 +94,22 @@ class ConversationsTableViewController: UITableViewController {
         return cell
     }
     
+    override func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCellEditingStyle, forRowAt indexPath: IndexPath) {
+        if editingStyle == .delete {
+            //Is rt
+            let conv = sortedConversations![indexPath.row] as Conversation
+            conv.leave({
+                tableView.deleteRows(at: [indexPath], with: .fade)
+
+            }) { (error) in
+                print(error)
+            }
+        }
+    }
 
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        performSegue(withIdentifier: "viewConversation", sender: indexPath)
+        selectedConversation = sortedConversations![indexPath.row] as Conversation
+        performSegue(withIdentifier: "viewConversation", sender: nil)
     }
 
     
@@ -93,33 +118,16 @@ class ConversationsTableViewController: UITableViewController {
     // In a storyboard-based application, you will often want to do a little preparation before navigation
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if segue.identifier == "viewConversation" {
-            let row = (sender as! IndexPath).row; //we know that sender is an NSIndexPath here.
-            let conv = client.conversation.conversations[row] as Conversation
+            guard let _ = selectedConversation else {
+                return
+            }
+//            let row = (sender as! IndexPath).row;
+//            let conv = client.conversation.conversations[row] as Conversation
             let chatVC = segue.destination as? ChatTableViewController
-            chatVC?.conversation = conv
-
+            chatVC?.conversation = selectedConversation!
         }
     }
     
 
 }
 
-extension UITableView {
-    
-    func setEmptyMessage(_ message: String) {
-        let messageLabel = UILabel(frame: CGRect(x: 0, y: 0, width: self.bounds.size.width, height: self.bounds.size.height))
-        messageLabel.text = message
-        messageLabel.textColor = .black
-        messageLabel.numberOfLines = 0;
-        messageLabel.textAlignment = .center;
-        messageLabel.sizeToFit()
-        
-        self.backgroundView = messageLabel;
-        self.separatorStyle = .none;
-    }
-    
-    func restore() {
-        self.backgroundView = nil
-        self.separatorStyle = .singleLine
-    }
-}

@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		45128DFB20D2C47500E32222 /* UITableView+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45128DFA20D2C47500E32222 /* UITableView+Extension.swift */; };
 		45449D5F20D1766C00EF34E2 /* ConversationsTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45449D5E20D1766C00EF34E2 /* ConversationsTableViewController.swift */; };
 		45E9820820D18A07003B6C7B /* ChatTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45E9820720D18A07003B6C7B /* ChatTableViewController.swift */; };
 		45F4524A20CEFF880051294A /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45F4524920CEFF880051294A /* AppDelegate.swift */; };
@@ -20,6 +21,7 @@
 
 /* Begin PBXFileReference section */
 		0139DBADC6A57254B282D395 /* Pods-Stitch-Demo.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Stitch-Demo.release.xcconfig"; path = "Pods/Target Support Files/Pods-Stitch-Demo/Pods-Stitch-Demo.release.xcconfig"; sourceTree = "<group>"; };
+		45128DFA20D2C47500E32222 /* UITableView+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UITableView+Extension.swift"; sourceTree = "<group>"; };
 		45449D5E20D1766C00EF34E2 /* ConversationsTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ConversationsTableViewController.swift; sourceTree = "<group>"; };
 		45E9820720D18A07003B6C7B /* ChatTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatTableViewController.swift; sourceTree = "<group>"; };
 		45F4524620CEFF880051294A /* Stitch-Demo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Stitch-Demo.app"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -55,6 +57,14 @@
 			name = Pods;
 			sourceTree = "<group>";
 		};
+		45128DF920D2C46000E32222 /* Extensions */ = {
+			isa = PBXGroup;
+			children = (
+				45128DFA20D2C47500E32222 /* UITableView+Extension.swift */,
+			);
+			path = Extensions;
+			sourceTree = "<group>";
+		};
 		45F4523D20CEFF880051294A = {
 			isa = PBXGroup;
 			children = (
@@ -76,6 +86,7 @@
 		45F4524820CEFF880051294A /* Stitch-Demo */ = {
 			isa = PBXGroup;
 			children = (
+				45128DF920D2C46000E32222 /* Extensions */,
 				45F6643A20D12756002D8F6E /* Nexmo.swift */,
 				45F4524920CEFF880051294A /* AppDelegate.swift */,
 				45F4524B20CEFF880051294A /* ViewController.swift */,
@@ -231,6 +242,7 @@
 				45449D5F20D1766C00EF34E2 /* ConversationsTableViewController.swift in Sources */,
 				45F4524A20CEFF880051294A /* AppDelegate.swift in Sources */,
 				45E9820820D18A07003B6C7B /* ChatTableViewController.swift in Sources */,
+				45128DFB20D2C47500E32222 /* UITableView+Extension.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
