@@ -1,6 +1,6 @@
 PODS:
   - Alamofire (4.7.2)
-  - Nexmo-Stitch (1.5.0):
+  - Nexmo-Stitch (1.8.0):
     - Alamofire (~> 4.0)
     - NexmoGRDB.swift (~> 0.90)
     - NexmoWebRTC (~> 63.11)
@@ -31,7 +31,7 @@ SPEC REPOS:
 
 SPEC CHECKSUMS:
   Alamofire: e4fa87002c137ba2d8d634d2c51fabcda0d5c223
-  Nexmo-Stitch: afa2dc2d33c48e4792ff9c4d4ca146b28657cc4d
+  Nexmo-Stitch: ecb45e5573ce0ada64c349e91850bccbffc7b7ed
   NexmoGRDB.swift: a3f76f83f87c0836f3b2cdb375aa7e9e9f8bce3a
   NexmoWebRTC: 259075ae09616c4b847024f0dccd22650dc3a14c
   RxSwift: 99e10317ddfcc7fbe01356aafd118fde4a0be104

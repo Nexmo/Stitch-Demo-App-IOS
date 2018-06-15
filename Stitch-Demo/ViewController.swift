@@ -7,7 +7,7 @@
 //
 
 import UIKit
-import Stitch
+ import Stitch
 import SwiftyJSON
 
 class ViewController: UIViewController {
@@ -24,12 +24,13 @@ class ViewController: UIViewController {
     }
     
     override func viewDidAppear(_ animated: Bool) {
-        self.logoutButton.isEnabled = (client.account.user != nil)
+        updateLogoutState()
         super.viewDidAppear(animated)
     }
 
     @IBAction func logoutAction(_ sender: Any) {
         client.logout()
+        updateLogoutState()
         
         let alert = UIAlertController(title: "Logout Successful", message: nil, preferredStyle:.alert)
         alert.addAction(UIAlertAction(title: "OK", style: .cancel, handler: nil))
@@ -98,6 +99,9 @@ class ViewController: UIViewController {
             self.present(alert, animated: true)
         }
     }
+    func updateLogoutState() {
+        self.logoutButton.isEnabled = (client.account.user != nil)
+    }
     
     func doLogin(_ token:String) {
         
@@ -109,10 +113,14 @@ class ViewController: UIViewController {
             if let user = self.client.account.user {
                 print("DEMO - login successful and here is our \(user)")
             } // insert activity indicator to track subscription
+            self.updateLogoutState()
+
             
         }, onError: { [weak self] error in
             
             print(error.localizedDescription)
+            self?.updateLogoutState()
+
             
             // remove to a function
             let reason: String = {

@@ -27,8 +27,6 @@ class ConversationsTableViewController: UITableViewController {
         tableView.reloadData()
         
         self.navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(createConversation(_:)))
-        
-//        newConversation("Test")
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -58,7 +56,6 @@ class ConversationsTableViewController: UITableViewController {
         self.client.conversation.new(with: text, shouldJoin: true, { (conversation) in
             print("success")
             DispatchQueue.main.async {
-                self.selectedConversation = conversation
                 self.sortedConversations = self.client.conversation.conversations.sorted(by: { $0.creationDate.compare($1.creationDate) == .orderedDescending })
                 self.tableView.reloadData()
             }
@@ -94,13 +91,12 @@ class ConversationsTableViewController: UITableViewController {
         return cell
     }
     
+    //TODO: update `delete` text to `leave`
     override func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCellEditingStyle, forRowAt indexPath: IndexPath) {
         if editingStyle == .delete {
-            //Is rt
             let conv = sortedConversations![indexPath.row] as Conversation
             conv.leave({
                 tableView.deleteRows(at: [indexPath], with: .fade)
-
             }) { (error) in
                 print(error)
             }
@@ -108,8 +104,8 @@ class ConversationsTableViewController: UITableViewController {
     }
 
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        selectedConversation = sortedConversations![indexPath.row] as Conversation
-        performSegue(withIdentifier: "viewConversation", sender: nil)
+        performSegue(withIdentifier: "viewConversation", sender: indexPath)
+        
     }
 
     
@@ -118,13 +114,10 @@ class ConversationsTableViewController: UITableViewController {
     // In a storyboard-based application, you will often want to do a little preparation before navigation
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if segue.identifier == "viewConversation" {
-            guard let _ = selectedConversation else {
-                return
-            }
-//            let row = (sender as! IndexPath).row;
-//            let conv = client.conversation.conversations[row] as Conversation
+            let row = (sender as! IndexPath).row;
+            let conv = client.conversation.conversations[row] as Conversation
             let chatVC = segue.destination as? ChatTableViewController
-            chatVC?.conversation = selectedConversation!
+            chatVC?.conversation = conv
         }
     }
     

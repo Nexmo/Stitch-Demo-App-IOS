@@ -59,6 +59,17 @@ class ChatTableViewController: UIViewController, UITextFieldDelegate {
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        // Create the info button
+        let infoButton = UIButton(type: .infoLight)
+        
+        // You will need to configure the target action for the button itself, not the bar button itemr
+        infoButton.addTarget(self, action: #selector(getInfo(_:)), for: .touchUpInside)
+        
+        // Create a bar button item using the info button as its custom view
+        let infoBarButtonItem = UIBarButtonItem(customView: infoButton)
+        self.navigationItem.rightBarButtonItem = infoBarButtonItem
+        
+        
         inputTextField.becomeFirstResponder()
         tableView.keyboardDismissMode = .interactive
         
@@ -79,8 +90,11 @@ class ChatTableViewController: UIViewController, UITextFieldDelegate {
         conversation!.events.forEach({ event in
             print(event)
         })
-        
-       
+    }
+    
+    @objc func getInfo(_ sender:UIBarButtonItem) {
+        performSegue(withIdentifier: "getInfo", sender: nil)
+
     }
 
     func setupKeyboardObservers() {
@@ -168,8 +182,13 @@ class ChatTableViewController: UIViewController, UITextFieldDelegate {
     }
     
    
-    
-   
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        if segue.identifier == "getInfo" {
+            let destinationNavigationController = segue.destination as! UINavigationController
+            let targetController = destinationNavigationController.topViewController as! ConversationInfoViewController
+            targetController.conversation = conversation
+        }
+    }
 
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
@@ -230,8 +249,6 @@ extension ChatTableViewController: UITableViewDelegate, UITableViewDataSource {
         default:
             cell.textLabel?.text = ""
         }
-
-//        print("allReceipts",event?.allReceipts)
 
         return cell;
     }
