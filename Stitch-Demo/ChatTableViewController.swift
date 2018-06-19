@@ -11,11 +11,14 @@ import Stitch
 
 class ChatTableViewController: UIViewController, UITextFieldDelegate {
 
-    var conversation: Conversation?
-    /// Nexmo Conversation client
     let client: ConversationClient = {
         return ConversationClient.instance
     }()
+
+    var conversation: Conversation?
+   
+    // a set of unique members typing
+    private var whoIsTyping = Set<String>()
     var constraints:[NSLayoutConstraint] = []
     
     @IBOutlet weak var tableView: UITableView!
@@ -33,14 +36,15 @@ class ChatTableViewController: UIViewController, UITextFieldDelegate {
     lazy var inputContainerView: UIView = {
         let containerView = UIView()
         containerView.frame = CGRect(x: 0, y: 0, width: self.view.frame.width, height: 50)
-//        containerView.backgroundColor = UIColor.green
+        containerView.backgroundColor = UIColor.white
     
-        
+        //TODO: add button to send photo
         let sendButton = UIButton(type: .system)
         sendButton.setTitle("Send", for: UIControlState())
         sendButton.translatesAutoresizingMaskIntoConstraints = false
         sendButton.addTarget(self, action: #selector(handleSend), for: .touchUpInside)
         containerView.addSubview(sendButton)
+        
         
         //x,y,w,h
         constraints.append(sendButton.rightAnchor.constraint(equalTo: containerView.rightAnchor))
@@ -89,9 +93,20 @@ class ChatTableViewController: UIViewController, UITextFieldDelegate {
             self.tableView.reloadData()
         })
         
-        conversation!.events.forEach({ event in
-            print(event)
-        })
+        // listen for typing
+        conversation?.members.forEach { member in
+            member.typing
+                .subscribe(onSuccess: { (typing) in
+                    print("isTyping",typing)
+                    self.handleTypingChangedEvent(member: member, isTyping: typing)
+                }, onError: { (error) in
+                    print("error")
+                })
+        }
+        
+//        conversation!.events.forEach({ event in
+//            print(event)
+//        })
     }
     
     @objc func getInfo(_ sender:UIBarButtonItem) {
@@ -105,8 +120,16 @@ class ChatTableViewController: UIViewController, UITextFieldDelegate {
         NotificationCenter.default.addObserver(self, selector: #selector(handleKeyboardWillHide), name: NSNotification.Name.UIKeyboardWillHide, object: nil)
     }
     
+    //MARK: TextField Delegate
+    func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
+        print("typing")
+        conversation?.startTyping()
+        return true
+    }
+    
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         handleSend()
+        conversation?.stopTyping()
         return true
     }
     
@@ -198,6 +221,48 @@ class ChatTableViewController: UIViewController, UITextFieldDelegate {
             destinationNavigationController.conversation = conversation
         }
     }
+    
+    private func handleTypingChangedEvent(member: Member, isTyping: Bool) {
+        /* make sure it is not this user typing */
+        if !member.user.isMe {
+            let name = member.user.name
+            
+            if isTyping {
+                whoIsTyping.insert(name)
+            } else {
+                whoIsTyping.remove(name)
+            }
+            
+            refreshTypingIndicatorLabel()
+        }
+    }
+    
+    private func refreshTypingIndicatorLabel(){
+        if !whoIsTyping.isEmpty {
+            var caption = whoIsTyping.joined(separator: ", ")
+            
+            if whoIsTyping.count == 1 {
+                caption += " is typing..."
+            } else {
+                caption += " are typing..."
+            }
+            
+            DispatchQueue.main.async {
+                print(caption)
+//                self.typyingIndicatorLabel.text = caption
+            }
+            
+            
+        } else {
+            
+            DispatchQueue.main.async {
+//                self.typyingIndicatorLabel.text = ""
+            }
+        }
+    }
+    
+    
+
 
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
