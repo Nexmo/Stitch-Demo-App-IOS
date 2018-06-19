@@ -12,6 +12,10 @@ import Stitch
 class ChatTableViewController: UIViewController, UITextFieldDelegate {
 
     var conversation: Conversation?
+    /// Nexmo Conversation client
+    let client: ConversationClient = {
+        return ConversationClient.instance
+    }()
     var constraints:[NSLayoutConstraint] = []
     
     @IBOutlet weak var tableView: UITableView!
@@ -61,14 +65,12 @@ class ChatTableViewController: UIViewController, UITextFieldDelegate {
         
         // Create the info button
         let infoButton = UIButton(type: .infoLight)
-        
-        // You will need to configure the target action for the button itself, not the bar button itemr
         infoButton.addTarget(self, action: #selector(getInfo(_:)), for: .touchUpInside)
-        
-        // Create a bar button item using the info button as its custom view
         let infoBarButtonItem = UIBarButtonItem(customView: infoButton)
         self.navigationItem.rightBarButtonItem = infoBarButtonItem
         
+        
+        //TODO: listen to call events
         
         inputTextField.becomeFirstResponder()
         tableView.keyboardDismissMode = .interactive
@@ -126,15 +128,22 @@ class ChatTableViewController: UIViewController, UITextFieldDelegate {
         let keyboardDuration = (notification.userInfo?[UIKeyboardAnimationDurationUserInfoKey] as AnyObject).doubleValue
         
         containerViewBottomAnchor?.constant = -keyboardFrame!.height
+        tableView.contentInset.bottom = keyboardFrame!.height
+        tableView.scrollIndicatorInsets.bottom = keyboardFrame!.height
+
         UIView.animate(withDuration: keyboardDuration!, animations: {
             self.view.layoutIfNeeded()
         })
     }
     
+    
     @objc func handleKeyboardWillHide(_ notification: Notification) {
         let keyboardDuration = (notification.userInfo?[UIKeyboardAnimationDurationUserInfoKey] as AnyObject).doubleValue
         
         containerViewBottomAnchor?.constant = 0
+        tableView.contentInset.bottom = 0
+        tableView.scrollIndicatorInsets.bottom = 0
+
         UIView.animate(withDuration: keyboardDuration!, animations: {
             self.view.layoutIfNeeded()
         })
@@ -184,9 +193,9 @@ class ChatTableViewController: UIViewController, UITextFieldDelegate {
    
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if segue.identifier == "getInfo" {
-            let destinationNavigationController = segue.destination as! UINavigationController
-            let targetController = destinationNavigationController.topViewController as! ConversationInfoViewController
-            targetController.conversation = conversation
+            let destinationNavigationController = segue.destination as! ConversationInfoViewController
+//            let targetController = destinationNavigationController.topViewController as! ConversationInfoViewController
+            destinationNavigationController.conversation = conversation
         }
     }
 
@@ -231,19 +240,25 @@ extension ChatTableViewController: UITableViewDelegate, UITableViewDataSource {
             cell.detailTextLabel?.text = (textEvent.from?.name)! + " " + (event?.createDate.description)!
             break
         case is MediaEvent:
-//            let mediaEvent = (event as! MediaEvent)
+            let mediaEvent = (event as! MediaEvent)
+            
+            cell.textLabel?.text =  (mediaEvent.from?.name)! + " " + (mediaEvent.enabled ? "enabled audio" : "disabled audio")
+            cell.detailTextLabel?.text = mediaEvent.createDate.description
             break
         case is MemberJoinedEvent:
             let memberJoinedEvent = (event as! MemberJoinedEvent)
-            cell.textLabel?.text =  (memberJoinedEvent.from?.name)! + " joined " +  (memberJoinedEvent.createDate.description)
+            cell.textLabel?.text =  (memberJoinedEvent.from?.name)! + " joined"
+            cell.detailTextLabel?.text = memberJoinedEvent.createDate.description
             break
         case is MemberInvitedEvent:
             let memberInvited = (event as! MemberInvitedEvent)
-            cell.textLabel?.text =  (memberInvited.from?.name)! + " invited " +  (memberInvited.createDate.description)
+            cell.textLabel?.text =  (memberInvited.from?.name)! + " invited"
+            cell.detailTextLabel?.text = memberInvited.createDate.description
             break
         case is MemberLeftEvent:
             let memberLeft = (event as! MemberLeftEvent)
-            cell.textLabel?.text =  (memberLeft.from?.name)! + " left " +  (memberLeft.createDate.description)
+            cell.textLabel?.text =  (memberLeft.from?.name)! + " left"
+            cell.detailTextLabel?.text = memberLeft.createDate.description
             break
         
         default:

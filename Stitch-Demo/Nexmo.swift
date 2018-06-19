@@ -9,7 +9,7 @@
 import UIKit
 import SwiftyJSON
 class Nexmo: NSObject {
-    let baseURL = "https://79d39a4c.ngrok.io/api"
+    let baseURL = "https://aqueous-sea-78840.herokuapp.com/api"
     
     static let shared = Nexmo()
     

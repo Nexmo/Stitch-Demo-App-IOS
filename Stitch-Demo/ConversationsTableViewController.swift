@@ -1,4 +1,4 @@
-//
+ //
 //  StitchConversationsTableViewController.swift
 //  IceBreaker
 //
@@ -23,10 +23,27 @@ class ConversationsTableViewController: UITableViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        sortedConversations = client.conversation.conversations.sorted(by: { $0.creationDate.compare($1.creationDate) == .orderedDescending })
-        tableView.reloadData()
+        client.conversation.conversations.conversationsChangesObjc(onInserted: { (_) in
+            print("conversations inserted")
+            self.reloadData()
+        }, onInsertedWithInvitedBy: { (_, _, _) in
+            print("conversations inserted with invite")
+            self.reloadData()
+        }, onUpdated: { (_) in
+            print("conversations updated")
+            self.reloadData()
+        }) { (_) in
+            print("conversations deleted")
+            self.reloadData()
+        }
+        self.reloadData()
         
         self.navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(createConversation(_:)))
+    }
+    
+    func reloadData() {
+        sortedConversations = client.conversation.conversations.sorted(by: { $0.creationDate.compare($1.creationDate) == .orderedDescending })
+        tableView.reloadData()
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -72,12 +89,12 @@ class ConversationsTableViewController: UITableViewController {
     }
 
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        if sortedConversations!.count == 0 {
+        guard let _ = sortedConversations else {
             self.tableView.setEmptyMessage("No Conversations")
-        } else {
-            self.tableView.restore()
+            return 0
         }
         
+        self.tableView.restore()
         return sortedConversations!.count
     }
 

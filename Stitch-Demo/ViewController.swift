@@ -7,7 +7,7 @@
 //
 
 import UIKit
- import Stitch
+import Stitch
 import SwiftyJSON
 
 class ViewController: UIViewController {
@@ -18,13 +18,17 @@ class ViewController: UIViewController {
     let client: ConversationClient = {
         return ConversationClient.instance
     }()
+    @IBOutlet weak var infoLabel: UILabel!
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        infoLabel.text = "Welcome to Awesome Chat. Click the Get Started button!"
     }
     
     override func viewDidAppear(_ animated: Bool) {
         updateLogoutState()
+        
+
         super.viewDidAppear(animated)
     }
 
@@ -35,6 +39,7 @@ class ViewController: UIViewController {
         let alert = UIAlertController(title: "Logout Successful", message: nil, preferredStyle:.alert)
         alert.addAction(UIAlertAction(title: "OK", style: .cancel, handler: nil))
         self.present(alert, animated: true, completion: nil)
+        infoLabel.text = "Logout Successful"
     }
     
     @IBAction func getStartedAction(_ sender: Any) {
@@ -101,6 +106,10 @@ class ViewController: UIViewController {
     }
     func updateLogoutState() {
         self.logoutButton.isEnabled = (client.account.user != nil)
+        if (client.account.user != nil) {
+            self.infoLabel.text = "User " + (client.account.user?.name)! + " Logged in"
+        }
+
     }
     
     func doLogin(_ token:String) {
@@ -108,13 +117,17 @@ class ViewController: UIViewController {
         print("DEMO - login called on client.")
         
         client.login(with: token).subscribe(onSuccess: {
-            
-            print("DEMO - login susbscribing with token.")
-            if let user = self.client.account.user {
-                print("DEMO - login successful and here is our \(user)")
-            } // insert activity indicator to track subscription
-            self.updateLogoutState()
+            DispatchQueue.main.async {
 
+                print("DEMO - login susbscribing with token.")
+                print("self.client.account", self.client.account)
+                //TODO: self.client.account.user is nill
+                if let user = self.client.account.user {
+
+                    print("DEMO - login successful and here is our \(user)")
+                } // insert activity indicator to track subscription
+                self.updateLogoutState()
+            }
             
         }, onError: { [weak self] error in
             

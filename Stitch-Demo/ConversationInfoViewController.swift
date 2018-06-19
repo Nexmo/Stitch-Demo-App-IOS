@@ -9,15 +9,27 @@
 import UIKit
 import Stitch
 import SwiftyJSON
+import AVFoundation
 
 class ConversationInfoViewController: UIViewController, MemberCellDelegate, UserCellDelegate {
    
     
-
+    /// Nexmo Conversation client
+    let client: ConversationClient = {
+        return ConversationClient.instance
+    }()
+    
     @IBOutlet weak var tableView: UITableView!
+    @IBOutlet weak var joinCallButton: UIButton!
     var conversation: Conversation?
     var availableUsers = [JSON]()
+    var allUsers:JSON?
     var members:[Member]?
+    var audioConnected = false
+    var currentCall:Call?
+    
+    
+
     
     
     @IBAction func doneAction(_ sender: Any) {
@@ -26,67 +38,129 @@ class ConversationInfoViewController: UIViewController, MemberCellDelegate, User
     
     override func viewDidLoad() {
         super.viewDidLoad()
-       
-        conversation?.members.memberChangesObjc(onInvited: { (_) in
-            self.loadUsers()
-        }, onJoined: { (_) in
-            self.loadUsers()
-        }, onLeft: { (_) in
-            self.loadUsers()
-        })
-        self.loadUsers()
-    }
     
-    func loadUsers() {
         Nexmo.shared.getUsers { (error, json) in
             DispatchQueue.main.async {
-                self.availableUsers.removeAll()
-                //filter all users from users already in conversation
-                for (_,user):(String, JSON) in json {
-                    let member = self.conversation?.members.filter({ (member) -> Bool in
-                        return member.user.name == user["name"].stringValue
-                    }).first
-                    
-                    if (member == nil) {
-                        self.availableUsers.append(user)
-                    }
+                self.allUsers = json
+                self.loadUsers()
+            }
+        }
+        
+        
+        conversation?.members.asObservable.subscribe { state in
+            DispatchQueue.main.async {
+                self.loadUsers()
+                switch state {
+                case .invited(let member): print("\(member) invited"); break
+                case .joined(let member):  print("\(member) joined"); break
+                case .left(let member):  print("\(member) left"); break
                 }
-                self.tableView.reloadData()
             }
         }
         
     }
+    
+    
+    func loadUsers() {
+        guard let allUsers = self.allUsers else {
+            return
+        }
+        
+        self.availableUsers.removeAll()
+        //filter all users from users already in conversation
+        for (_,user):(String, JSON) in allUsers {
+            let member = self.conversation?.members.filter({ (member) -> Bool in
+                return member.user.name == user["name"].stringValue
+            }).first
+            
+            if (member == nil) {
+                self.availableUsers.append(user)
+            }
+        }
+        self.tableView.reloadData()
+    }
 
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
-        // Dispose of any resources that can be recreated.
+    }
+
+    @IBAction func joinAudioAction(_ sender: Any) {
+        
+        if (!audioConnected) {
+            connectAudio()
+        } else {
+            disconnectAudio()
+        }
+    }
+    
+    @IBAction func leaveConvAction(_ sender: Any) {
+        
+        //TODO: error when leaving conversation CSI-780
+        conversation?.leave({
+            //return to conversation list VC
+            let viewControllers = self.navigationController!.viewControllers as [UIViewController];
+            for aViewController:UIViewController in viewControllers {
+                if aViewController.isKind(of: ConversationsTableViewController.self) {
+                    _ = self.navigationController?.popToViewController(aViewController, animated: true)
+                }
+            }
+            
+        }, onError: { (error) in
+            print("user left error", error)
+        })
     }
     
 
-    @IBAction func joinAudioAction(_ sender: Any) {
-    }
-    @IBAction func leaveConvAction(_ sender: Any) {
-    }
-    
     //MARK: MemberCellDelegate
     func callUser(_ cell: MemberCell) {
         guard let member = cell.member else {
             return
         }
+        if (currentCall != nil) {
+            print("cant call user, already connected")
+            currentCall?.hangUp(onSuccess: {
+                print("Call hangUp from dismiss of view controller")
+                cell.callButton.setTitle("Call", for: .normal)
+            }, onError: { error in
+                print("Call hangup failed", error)
+            })
+            
+//            currentCall?.memberState.unsubscribe()
+//            currentCall?.state.unsubscribe()
+            currentCall = nil
+            return
+        }
+        requestAudioPermission { (success) in
+            if (success) {
+                self.client.media.call([member.user.name], onSuccess: { result in
+                    // if you would like to display a UI for calling...
+                    self.currentCall = result.call
+                    cell.callButton.setTitle("In Progress", for: .normal)
+                    self.audioConnected = true
+                    result.call.loudspeaker = true
+                }, onError: { networkError in
+                    print("error",networkError)
+                    // if you would like to display a log for error...
+                })
+                
+            }
+        }
+    
+
     }
     
     func kickUser(_ cell: MemberCell) {
         guard let member = cell.member else {
             return
         }
-        //TODO: kicked user does not get removed from list
+        //TODO: kicked user does not get removed from list CSI-781
         member.kick({
             print("kicked")
-            self.loadUsers()
-            self.tableView.reloadData()
+            self.conversation?.requireSync = true
         }) { (error) in
             print("kick error", error)
         }
+        
     }
     
     //MARK: UserCellDelegate
@@ -99,13 +173,72 @@ class ConversationInfoViewController: UIViewController, MemberCellDelegate, User
         conversation?.join(username: user["name"].stringValue, memberId:nil, onSuccess: {
             print("user added")
             self.conversation?.requireSync = true
-
-            //TODO: reload
-            self.loadUsers()
         }, onError: { (error) in
             print("user add error", error)
         })
     }
+    
+    private func connectAudio() {
+        requestAudioPermission { (success) in
+            if (success) {
+                do {
+                    try self.conversation?.media.enable().subscribe(onSuccess: { (state) in
+                        DispatchQueue.main.async {
+                            print("connectAudio State \(state.rawValue)")
+                            if (state == Media.State.connecting) {
+                                self.toast(title: "Connecting")
+                                self.joinCallButton.setTitle("Connecting", for: .normal)
+                            } else if (state == Media.State.connected) {
+                                self.audioConnected = true
+                                self.joinCallButton.setTitle("Connected", for: .normal)
+                                self.toast(title: "Connected")
+                            } else if (state == Media.State.disconnected || state == Media.State.failed) {
+                                self.audioConnected = false
+                                self.joinCallButton.setTitle("Join Audio Call", for: .normal)
+                                self.toast(title: "Disconnected")
+                            } else {
+                                
+                            }
+                        }
+
+                    }, onError: { (error) in
+                        print("enableAudio error", error)
+                        self.joinCallButton.titleLabel?.text = error.localizedDescription
+                    })
+                } catch let error {
+                    print("enableAudio error", error)
+                    self.joinCallButton.titleLabel?.text = error.localizedDescription
+                    
+                }
+            }
+        }
+    }
+    
+    private func disconnectAudio() {
+        
+        //TODO: CSI-783
+        self.conversation?.media.disable()
+        self.audioConnected = false
+        print("audio disconnected")
+        self.joinCallButton.setTitle("Join Audio Call", for: .normal)
+    }
+    
+    private func requestAudioPermission(completion: @escaping (_ success:Bool) -> Void) {
+        
+        do {
+            let session = AVAudioSession.sharedInstance()
+            
+            try session.setCategory(AVAudioSessionCategoryPlayAndRecord)
+            session.requestRecordPermission { (success) in
+                completion(success)
+            }
+        } catch  {
+            print(error)
+            completion(false)
+
+        }
+    }
+
 
 }
 
@@ -128,7 +261,6 @@ extension ConversationInfoViewController: UITableViewDelegate, UITableViewDataSo
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
        
-        
         if (indexPath.section == 0) {
             let cell = tableView.dequeueReusableCell(withIdentifier: "memberCell", for: indexPath) as! MemberCell
             cell.delegate = self
@@ -173,12 +305,14 @@ class MemberCell:UITableViewCell {
             
             if ( member?.user.isMe)! {
                 userName.font = UIFont.boldSystemFont(ofSize: 15)
+                
             }
         }
     }
     
     @IBOutlet weak var userName: UILabel!
     @IBOutlet weak var userID: UILabel!
+    @IBOutlet weak var callButton: UIButton!
     
     @IBAction func callAction(_ sender: Any) {
         delegate?.callUser(self)
