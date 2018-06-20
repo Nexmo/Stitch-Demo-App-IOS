@@ -9,7 +9,7 @@
 import UIKit
 import Stitch
 
-class ChatTableViewController: UIViewController, UITextFieldDelegate {
+class ChatTableViewController: UIViewController, UITextFieldDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate {
 
     
     let client: ConversationClient = {
@@ -17,16 +17,17 @@ class ChatTableViewController: UIViewController, UITextFieldDelegate {
     }()
 
     var conversation: Conversation?
+    let imagePicker = UIImagePickerController()
+    
     @IBOutlet weak var containerView: UIView!
     
     // a set of unique members typing
     private var whoIsTyping = Set<String>()
-    var constraints:[NSLayoutConstraint] = []
     
     @IBOutlet weak var bottomLayoutContraint: NSLayoutConstraint?
     @IBOutlet weak var tableView: UITableView!
-    var containerViewBottomAnchor: NSLayoutConstraint?
-
+    @IBOutlet weak var inputTextField: UITextField!
+    @IBOutlet weak var isTypingLabel: UILabel!
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -40,16 +41,15 @@ class ChatTableViewController: UIViewController, UITextFieldDelegate {
         
         //TODO: listen to call events
         
-//        containerVC?.textField.becomeFirstResponder()
+        inputTextField.becomeFirstResponder()
         tableView.keyboardDismissMode = .interactive
         
         setupKeyboardObservers()
     
     
         // listen for messages
-        conversation!.events.newEventReceived.subscribe(onSuccess: { event in
+    conversation!.events.newEventReceived.subscribe(onSuccess: { event in
             print("event \(event)")
-            // refresh tableView
             self.tableView.reloadData()
         })
         
@@ -63,17 +63,24 @@ class ChatTableViewController: UIViewController, UITextFieldDelegate {
                     print("error")
                 })
         }
-        
-//        conversation!.events.forEach({ event in
-//            print(event)
-//        })
+
     }
     
     @objc func getInfo(_ sender:UIBarButtonItem) {
         performSegue(withIdentifier: "getInfo", sender: nil)
 
     }
-
+    @IBAction func sendPhoto(_ sender: Any) {
+        
+        imagePicker.allowsEditing = false
+        imagePicker.sourceType = .photoLibrary
+        imagePicker.delegate = self;
+        present(imagePicker, animated: true, completion: nil)
+    }
+    
+    @IBAction func sendText(_ sender: Any) {
+        handleSend()
+    }
     func setupKeyboardObservers() {
         NotificationCenter.default.addObserver(self, selector: #selector(handleKeyboardWillShow), name: NSNotification.Name.UIKeyboardWillShow, object: nil)
         
@@ -82,7 +89,6 @@ class ChatTableViewController: UIViewController, UITextFieldDelegate {
     
     //MARK: TextField Delegate
     func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
-        print("typing")
         conversation?.startTyping()
         return true
     }
@@ -93,31 +99,52 @@ class ChatTableViewController: UIViewController, UITextFieldDelegate {
         return true
     }
     
+    //Mark UIImagePickerControllerDelegate
+   
+    func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String : Any]) {
+    
+        guard let pickedImage = info[UIImagePickerControllerOriginalImage] as? UIImage, let imageData = UIImagePNGRepresentation(pickedImage) else {
+            return
+        }
+        do {
+            // send method
+            try conversation?.send(imageData)
+            tableView.reloadData()
+            self.inputTextField.text = nil
+            self.view.endEditing(true)
+            
+        } catch let error {
+            print(error)
+        }
+        
+        dismiss(animated: true, completion: nil)
+    }
+
+    
     @objc func handleSend() {
         do {
             // send method
-//            try conversation?.send(self.inputTextField.text!)
+            try conversation?.send(self.inputTextField.text!)
             
         } catch let error {
             print(error)
         }
         tableView.reloadData()
-//        self.inputTextField.text = nil
+        self.inputTextField.text = nil
         self.view.endEditing(true)
 
     }
+    
     @objc func handleKeyboardWillShow(_ notification: Notification) {
         let keyboardFrame = (notification.userInfo?[UIKeyboardFrameEndUserInfoKey] as AnyObject).cgRectValue
         let keyboardDuration = (notification.userInfo?[UIKeyboardAnimationDurationUserInfoKey] as AnyObject).doubleValue
         
         bottomLayoutContraint?.constant = -keyboardFrame!.height
        
-
         UIView.animate(withDuration: keyboardDuration!, animations: {
             self.view.layoutIfNeeded()
         })
     }
-    
     
     @objc func handleKeyboardWillHide(_ notification: Notification) {
         let keyboardDuration = (notification.userInfo?[UIKeyboardAnimationDurationUserInfoKey] as AnyObject).doubleValue
@@ -129,15 +156,6 @@ class ChatTableViewController: UIViewController, UITextFieldDelegate {
         })
     }
     
-    
-   
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        if segue.identifier == "getInfo" {
-            let destinationNavigationController = segue.destination as! ConversationInfoViewController
-//            let targetController = destinationNavigationController.topViewController as! ConversationInfoViewController
-            destinationNavigationController.conversation = conversation
-        }
-    }
     
     private func handleTypingChangedEvent(member: Member, isTyping: Bool) {
         /* make sure it is not this user typing */
@@ -167,23 +185,36 @@ class ChatTableViewController: UIViewController, UITextFieldDelegate {
             
             DispatchQueue.main.async {
                 print(caption)
-//                self.typyingIndicatorLabel.text = caption
+                self.isTypingLabel.text = caption
             }
             
             
         } else {
             
             DispatchQueue.main.async {
-//                self.typyingIndicatorLabel.text = ""
+                self.isTypingLabel.text = ""
             }
         }
     }
     
 
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        if segue.identifier == "getInfo" {
+            let destinationNavigationController = segue.destination as! ConversationInfoViewController
+            destinationNavigationController.conversation = conversation
+        } else if segue.identifier == "photoViewer" {
+            let row = (sender as! IndexPath).row;
+            guard let imageEvent = conversation?.events[row] as? ImageEvent, let imagePath = imageEvent.path(of: IPS.ImageType.original) else {
+                return
+            }
+            let destinationNavigationController = segue.destination as! UINavigationController
+            let targetController = destinationNavigationController.topViewController as! PhotoViewController
+            targetController.image = UIImage(contentsOfFile: imagePath)
+        }
+    }
 
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
-        // Dispose of any resources that can be recreated.
     }
 
 }
@@ -207,8 +238,17 @@ extension ChatTableViewController: UITableViewDelegate, UITableViewDataSource {
         cell.accessoryType = UITableViewCellAccessoryType.none
 
         let event = conversation?.events[indexPath.row]
-        //TODO: show photos
+
         switch event {
+        case is ImageEvent:
+            let imageEvent = (event as! ImageEvent)
+            guard let imagePath = imageEvent.path(of: IPS.ImageType.thumbnail) else {
+                break
+            }
+            cell.imageView?.image = UIImage(contentsOfFile: imagePath)
+            cell.textLabel?.text = (imageEvent.from?.name)! + " uploaded a photo"
+            cell.detailTextLabel?.text = (event?.createDate.description)!
+            break;
         case is TextEvent:
             let textEvent = (event as! TextEvent)
             //TODO: Is this how we get the seen receipt?
@@ -243,14 +283,22 @@ extension ChatTableViewController: UITableViewDelegate, UITableViewDataSource {
             cell.textLabel?.text =  (memberLeft.from?.name)! + " left"
             cell.detailTextLabel?.text = memberLeft.createDate.description
             break
-        
         default:
             cell.textLabel?.text = ""
         }
 
         return cell;
     }
+    
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        let event = conversation?.events[indexPath.row]
+        
+        if event is ImageEvent {
+            performSegue(withIdentifier: "photoViewer", sender: indexPath)
+        }
+    }
 }
+
 
 class ContainerViewController:UIViewController {
     

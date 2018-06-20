@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="14112" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="tce-rc-Pk5">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="14113" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="tce-rc-Pk5">
     <device id="retina4_7" orientation="portrait">
         <adaptation id="fullscreen"/>
     </device>
@@ -169,6 +169,9 @@
                                         <nil key="textColor"/>
                                         <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                         <textInputTraits key="textInputTraits"/>
+                                        <connections>
+                                            <outlet property="delegate" destination="R7U-RE-h84" id="cPf-TP-mu4"/>
+                                        </connections>
                                     </textField>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="9ZT-W2-Dnu">
                                         <rect key="frame" x="272" y="17" width="46" height="30"/>
@@ -176,6 +179,9 @@
                                             <constraint firstAttribute="width" constant="46" id="D3f-Gd-aSG"/>
                                         </constraints>
                                         <state key="normal" title="Photo"/>
+                                        <connections>
+                                            <action selector="sendPhoto:" destination="R7U-RE-h84" eventType="touchUpInside" id="l1h-2c-d3G"/>
+                                        </connections>
                                     </button>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Nll-uP-qdc">
                                         <rect key="frame" x="321" y="17" width="46" height="30"/>
@@ -183,9 +189,15 @@
                                             <constraint firstAttribute="width" constant="46" id="srl-kP-BaI"/>
                                         </constraints>
                                         <state key="normal" title="Send"/>
+                                        <connections>
+                                            <action selector="sendText:" destination="R7U-RE-h84" eventType="touchUpInside" id="3YO-cz-6aO"/>
+                                        </connections>
                                     </button>
-                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="9WY-f2-TAg">
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="9WY-f2-TAg">
                                         <rect key="frame" x="8" y="0.0" width="359" height="16"/>
+                                        <constraints>
+                                            <constraint firstAttribute="height" constant="16" id="gh7-3V-Ef8"/>
+                                        </constraints>
                                         <fontDescription key="fontDescription" type="system" pointSize="13"/>
                                         <color key="textColor" white="0.66666666669999997" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                         <nil key="highlightedColor"/>
@@ -222,13 +234,47 @@
                     <connections>
                         <outlet property="bottomLayoutContraint" destination="tlQ-CO-xhS" id="sCw-42-JPg"/>
                         <outlet property="containerView" destination="BCf-V9-zy5" id="ti1-5P-uSW"/>
+                        <outlet property="inputTextField" destination="elR-Eg-Kca" id="vEY-g5-ofX"/>
+                        <outlet property="isTypingLabel" destination="9WY-f2-TAg" id="5El-Lf-Shk"/>
                         <outlet property="tableView" destination="wAv-Pt-R9d" id="ybh-by-rA6"/>
                         <segue destination="b6s-jI-ZIa" kind="show" identifier="getInfo" id="pW1-sR-WwR"/>
+                        <segue destination="8gO-St-jeF" kind="presentation" identifier="photoViewer" id="JXw-hh-tNs"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="bmr-YI-pHA" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="3663.1999999999998" y="-95.802098950524751"/>
+        </scene>
+        <!--Photo View Controller-->
+        <scene sceneID="cak-z2-jwC">
+            <objects>
+                <viewController id="zkE-py-wgg" customClass="PhotoViewController" customModule="Stitch_Demo" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="8Kl-IH-QYa">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="lmp-Df-XqI">
+                                <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                            </imageView>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        <viewLayoutGuide key="safeArea" id="d0E-cE-uZV"/>
+                    </view>
+                    <navigationItem key="navigationItem" id="gYG-Zb-jSO">
+                        <barButtonItem key="rightBarButtonItem" title="Close" id="bKq-eI-Mdz">
+                            <connections>
+                                <action selector="closeAction:" destination="zkE-py-wgg" id="IM1-fQ-QQo"/>
+                            </connections>
+                        </barButtonItem>
+                    </navigationItem>
+                    <connections>
+                        <outlet property="imageView" destination="lmp-Df-XqI" id="One-nw-M4q"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="Lcu-As-3Ic" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="5484" y="-232.53373313343329"/>
         </scene>
         <!--Conversation Info View Controller-->
         <scene sceneID="AyU-HV-Cnd">
@@ -384,7 +430,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="3Gg-53-op5" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="5684" y="343.17841079460271"/>
+            <point key="canvasLocation" x="6623.1999999999998" y="343.17841079460271"/>
         </scene>
         <!--Navigation Controller-->
         <scene sceneID="odz-eC-qBs">
@@ -403,6 +449,24 @@
                 <placeholder placeholderIdentifier="IBFirstResponder" id="JOn-y3-WmS" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="972" y="31.934032983508249"/>
+        </scene>
+        <!--Navigation Controller-->
+        <scene sceneID="DaA-Gi-K8Z">
+            <objects>
+                <navigationController automaticallyAdjustsScrollViewInsets="NO" id="8gO-St-jeF" sceneMemberID="viewController">
+                    <toolbarItems/>
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" id="jwP-p4-IID">
+                        <rect key="frame" x="0.0" y="20" width="375" height="44"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                    </navigationBar>
+                    <nil name="viewControllers"/>
+                    <connections>
+                        <segue destination="zkE-py-wgg" kind="relationship" relationship="rootViewController" id="5yA-Ub-WBG"/>
+                    </connections>
+                </navigationController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="Ek2-EB-MVN" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="4544.8000000000002" y="-232.53373313343329"/>
         </scene>
     </scenes>
 </document>

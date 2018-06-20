@@ -10,6 +10,7 @@
 		45128DFB20D2C47500E32222 /* UITableView+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45128DFA20D2C47500E32222 /* UITableView+Extension.swift */; };
 		45128DFF20D2DDB700E32222 /* ConversationInfoViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45128DFE20D2DDB700E32222 /* ConversationInfoViewController.swift */; };
 		451EB24620D92E4C0022F32A /* UIViewController+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 451EB24520D92E4C0022F32A /* UIViewController+Extensions.swift */; };
+		4525DC6F20DAAD16004610BE /* PhotoViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4525DC6E20DAAD16004610BE /* PhotoViewController.swift */; };
 		45449D5F20D1766C00EF34E2 /* ConversationsTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45449D5E20D1766C00EF34E2 /* ConversationsTableViewController.swift */; };
 		45E9820820D18A07003B6C7B /* ChatTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45E9820720D18A07003B6C7B /* ChatTableViewController.swift */; };
 		45F4524A20CEFF880051294A /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45F4524920CEFF880051294A /* AppDelegate.swift */; };
@@ -26,6 +27,7 @@
 		45128DFA20D2C47500E32222 /* UITableView+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UITableView+Extension.swift"; sourceTree = "<group>"; };
 		45128DFE20D2DDB700E32222 /* ConversationInfoViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConversationInfoViewController.swift; sourceTree = "<group>"; };
 		451EB24520D92E4C0022F32A /* UIViewController+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIViewController+Extensions.swift"; sourceTree = "<group>"; };
+		4525DC6E20DAAD16004610BE /* PhotoViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoViewController.swift; sourceTree = "<group>"; };
 		45449D5E20D1766C00EF34E2 /* ConversationsTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ConversationsTableViewController.swift; sourceTree = "<group>"; };
 		45E9820720D18A07003B6C7B /* ChatTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatTableViewController.swift; sourceTree = "<group>"; };
 		45F4524620CEFF880051294A /* Stitch-Demo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Stitch-Demo.app"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -102,6 +104,7 @@
 				45F4525020CEFF8A0051294A /* Assets.xcassets */,
 				45F4525220CEFF8A0051294A /* LaunchScreen.storyboard */,
 				45F4525520CEFF8A0051294A /* Info.plist */,
+				4525DC6E20DAAD16004610BE /* PhotoViewController.swift */,
 			);
 			path = "Stitch-Demo";
 			sourceTree = "<group>";
@@ -248,6 +251,7 @@
 				451EB24620D92E4C0022F32A /* UIViewController+Extensions.swift in Sources */,
 				45449D5F20D1766C00EF34E2 /* ConversationsTableViewController.swift in Sources */,
 				45F4524A20CEFF880051294A /* AppDelegate.swift in Sources */,
+				4525DC6F20DAAD16004610BE /* PhotoViewController.swift in Sources */,
 				45E9820820D18A07003B6C7B /* ChatTableViewController.swift in Sources */,
 				45128DFF20D2DDB700E32222 /* ConversationInfoViewController.swift in Sources */,
 				45128DFB20D2C47500E32222 /* UITableView+Extension.swift in Sources */,
