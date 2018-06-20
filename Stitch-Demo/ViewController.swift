@@ -29,7 +29,6 @@ class ViewController: UIViewController {
     override func viewWillAppear(_ animated: Bool) {
         client.account.state.subscribe(onSuccess: { (account_state) in
             DispatchQueue.main.async {
-                print("account_state",account_state)
                 switch account_state {
                 case  .loggedIn(let session):
                     self.logoutButton.isEnabled = true
@@ -43,6 +42,7 @@ class ViewController: UIViewController {
             }
             
         }) { (_) in }
+        
         super.viewWillAppear(animated)
     }
     
@@ -85,7 +85,20 @@ class ViewController: UIViewController {
         let alert = UIAlertController(title: "Whats your username", message: nil, preferredStyle: .alert)
         
         alert.addAction(UIAlertAction(title: "Create User", style: .default, handler: { (action) in
-            
+            //TODO: create user
+            let textField = alert.textFields![0] as UITextField
+            //TODO: add spinner to indicate loading
+            Nexmo.shared.createUser(textField.text!, completion: { (success) in
+                DispatchQueue.main.async {
+                    if (success) {
+                        Nexmo.shared.authenticateUser(textField.text!, completion: { (error, json) in
+                            let token = json["user_jwt"].stringValue
+                            print(token)
+                            self.doLogin(token)
+                        })
+                    }
+                }
+            })
         }))
         alert.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
         
@@ -124,11 +137,12 @@ class ViewController: UIViewController {
         
         client.login(with: token).subscribe(onSuccess: {
             DispatchQueue.main.async {
+                //TODO: add alert when login is successful
                 print("DEMO - login susbscribing with token.")
                 print("self.client.account", self.client.account)
             }
             
-        }, onError: { [weak self] error in
+        }, onError: { error in
             
             print(error.localizedDescription)
 

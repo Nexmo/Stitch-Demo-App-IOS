@@ -51,4 +51,34 @@ class Nexmo: NSObject {
         }
         task.resume()
     }
+    
+    func createUser(_ username:String, admin:Bool = true, completion: @escaping (_ success:Bool) -> Void) {
+        let urlString = baseURL + "/users"
+        
+        //Make JSON to send to send to server
+        var json = [String:Any]()
+        
+        json["username"] = username
+        json["admin"] = admin
+        
+        do {
+            let data = try JSONSerialization.data(withJSONObject: json, options: [])
+            
+            var request = URLRequest(url: URL(string: urlString)!)
+            request.httpMethod = "POST"
+            request.httpBody = data
+            request.addValue("application/json", forHTTPHeaderField: "Content-Type")
+            request.addValue("application/json", forHTTPHeaderField: "Accept")
+            
+            let task = URLSession.shared.dataTask(with: request) { (data, response, error) in
+                if let httpResponse = response as? HTTPURLResponse {
+                    print("error \(httpResponse.statusCode)")
+                    completion(httpResponse.statusCode == 200)
+                }
+            }
+            task.resume()
+            
+        }catch{
+        }
+    }
 }
