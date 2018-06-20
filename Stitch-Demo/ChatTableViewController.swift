@@ -11,58 +11,22 @@ import Stitch
 
 class ChatTableViewController: UIViewController, UITextFieldDelegate {
 
+    
     let client: ConversationClient = {
         return ConversationClient.instance
     }()
 
     var conversation: Conversation?
-   
+    @IBOutlet weak var containerView: UIView!
+    
     // a set of unique members typing
     private var whoIsTyping = Set<String>()
     var constraints:[NSLayoutConstraint] = []
     
+    @IBOutlet weak var bottomLayoutContraint: NSLayoutConstraint?
     @IBOutlet weak var tableView: UITableView!
     var containerViewBottomAnchor: NSLayoutConstraint?
-    
-    lazy var inputTextField: UITextField = {
-        let textField = UITextField()
-        textField.placeholder = "Enter message..."
-        textField.translatesAutoresizingMaskIntoConstraints = false
-        textField.delegate = self
-        return textField
-    }()
 
-    
-    lazy var inputContainerView: UIView = {
-        let containerView = UIView()
-        containerView.frame = CGRect(x: 0, y: 0, width: self.view.frame.width, height: 50)
-        containerView.backgroundColor = UIColor.white
-    
-        //TODO: add button to send photo
-        let sendButton = UIButton(type: .system)
-        sendButton.setTitle("Send", for: UIControlState())
-        sendButton.translatesAutoresizingMaskIntoConstraints = false
-        sendButton.addTarget(self, action: #selector(handleSend), for: .touchUpInside)
-        containerView.addSubview(sendButton)
-        
-        
-        //x,y,w,h
-        constraints.append(sendButton.rightAnchor.constraint(equalTo: containerView.rightAnchor))
-        constraints.append(sendButton.centerYAnchor.constraint(equalTo: containerView.centerYAnchor))
-        constraints.append(sendButton.widthAnchor.constraint(equalToConstant: 80))
-        constraints.append(sendButton.heightAnchor.constraint(equalTo: containerView.heightAnchor))
-        
-        containerView.addSubview(self.inputTextField)
-        //x,y,w,h
-      
-
-        constraints.append(self.inputTextField.leftAnchor.constraint(equalTo: containerView.leftAnchor, constant: 8))
-        constraints.append(self.inputTextField.centerYAnchor.constraint(equalTo: containerView.centerYAnchor))
-        constraints.append(self.inputTextField.rightAnchor.constraint(equalTo: sendButton.leftAnchor))
-        constraints.append(self.inputTextField.heightAnchor.constraint(equalTo: containerView.heightAnchor))
-        
-        return containerView
-    }()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -76,15 +40,11 @@ class ChatTableViewController: UIViewController, UITextFieldDelegate {
         
         //TODO: listen to call events
         
-        inputTextField.becomeFirstResponder()
+//        containerVC?.textField.becomeFirstResponder()
         tableView.keyboardDismissMode = .interactive
         
-        
-        setupInputComponents()
         setupKeyboardObservers()
-        activateConstraints()
-        
-        
+    
     
         // listen for messages
         conversation!.events.newEventReceived.subscribe(onSuccess: { event in
@@ -136,13 +96,13 @@ class ChatTableViewController: UIViewController, UITextFieldDelegate {
     @objc func handleSend() {
         do {
             // send method
-            try conversation?.send(self.inputTextField.text!)
+//            try conversation?.send(self.inputTextField.text!)
             
         } catch let error {
             print(error)
         }
         tableView.reloadData()
-        self.inputTextField.text = nil
+//        self.inputTextField.text = nil
         self.view.endEditing(true)
 
     }
@@ -150,9 +110,8 @@ class ChatTableViewController: UIViewController, UITextFieldDelegate {
         let keyboardFrame = (notification.userInfo?[UIKeyboardFrameEndUserInfoKey] as AnyObject).cgRectValue
         let keyboardDuration = (notification.userInfo?[UIKeyboardAnimationDurationUserInfoKey] as AnyObject).doubleValue
         
-        containerViewBottomAnchor?.constant = -keyboardFrame!.height
-        tableView.contentInset.bottom = keyboardFrame!.height
-        tableView.scrollIndicatorInsets.bottom = keyboardFrame!.height
+        bottomLayoutContraint?.constant = -keyboardFrame!.height
+       
 
         UIView.animate(withDuration: keyboardDuration!, animations: {
             self.view.layoutIfNeeded()
@@ -163,55 +122,13 @@ class ChatTableViewController: UIViewController, UITextFieldDelegate {
     @objc func handleKeyboardWillHide(_ notification: Notification) {
         let keyboardDuration = (notification.userInfo?[UIKeyboardAnimationDurationUserInfoKey] as AnyObject).doubleValue
         
-        containerViewBottomAnchor?.constant = 0
-        tableView.contentInset.bottom = 0
-        tableView.scrollIndicatorInsets.bottom = 0
+        bottomLayoutContraint?.constant = 0
 
         UIView.animate(withDuration: keyboardDuration!, animations: {
             self.view.layoutIfNeeded()
         })
     }
     
-    func setupInputComponents() {
-        let containerView = UIView()
-//        containerView.backgroundColor = UIColor.purple
-        containerView.translatesAutoresizingMaskIntoConstraints = false
-        
-        view.addSubview(containerView)
-        
-        //ios9 constraint anchors
-        //x,y,w,h
-        
-        constraints.append(containerView.leftAnchor.constraint(equalTo: view.leftAnchor))
-        
-        containerViewBottomAnchor = containerView.bottomAnchor.constraint(equalTo: view.bottomAnchor)
-        constraints.append(containerViewBottomAnchor!)
-//        containerViewBottomAnchor?.isActive = true
-        
-        constraints.append(containerView.widthAnchor.constraint(equalTo: view.widthAnchor))
-        constraints.append(containerView.heightAnchor.constraint(equalToConstant: 50))
-        containerView.addSubview(inputContainerView)
-    }
-    func deactivateConstraints() {
-        for constraint in constraints {
-            constraint.isActive = false
-        }
-    }
-    func activateConstraints() {
-        
-        for constraint in constraints {
-            constraint.isActive = true
-        }
-    }
-    
-    override func willAnimateRotation(to toInterfaceOrientation: UIInterfaceOrientation, duration: TimeInterval) {
-        print("willAnimateRotation", toInterfaceOrientation)
-//        self.view.setNeedsUpdateConstraints()
-        self.view.removeConstraints(constraints)
-        deactivateConstraints()
-        self.view.addConstraints(constraints)
-        activateConstraints()
-    }
     
    
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
@@ -238,6 +155,7 @@ class ChatTableViewController: UIViewController, UITextFieldDelegate {
     }
     
     private func refreshTypingIndicatorLabel(){
+        //TODO: display on screen
         if !whoIsTyping.isEmpty {
             var caption = whoIsTyping.joined(separator: ", ")
             
@@ -260,7 +178,6 @@ class ChatTableViewController: UIViewController, UITextFieldDelegate {
             }
         }
     }
-    
     
 
 
@@ -290,10 +207,11 @@ extension ChatTableViewController: UITableViewDelegate, UITableViewDataSource {
         cell.accessoryType = UITableViewCellAccessoryType.none
 
         let event = conversation?.events[indexPath.row]
+        //TODO: show photos
         switch event {
         case is TextEvent:
             let textEvent = (event as! TextEvent)
-            //Is this how we get the seen receipt?
+            //TODO: Is this how we get the seen receipt?
             let receipt = textEvent.receiptForMember(textEvent.fromMember!)
             if (receipt != nil) {
                 if (receipt?.state == ReceiptRecord.State.seen) {
@@ -332,4 +250,15 @@ extension ChatTableViewController: UITableViewDelegate, UITableViewDataSource {
 
         return cell;
     }
+}
+
+class ContainerViewController:UIViewController {
+    
+    @IBOutlet weak var typingLabel: UILabel!
+    @IBAction func sendAction(_ sender: Any) {
+    }
+    @IBAction func choosePhotoAction(_ sender: Any) {
+    }
+    @IBOutlet weak var textField: UITextField!
+    
 }
