@@ -108,18 +108,30 @@ class ConversationsTableViewController: UITableViewController {
         return cell
     }
     
-    //TODO: update `delete` text to `leave`
-    override func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCellEditingStyle, forRowAt indexPath: IndexPath) {
-        if editingStyle == .delete {
-            let conv = sortedConversations![indexPath.row] as Conversation
-            conv.leave({
-                tableView.deleteRows(at: [indexPath], with: .fade)
-            }) { (error) in
-                print(error)
-            }
-        }
+    override func tableView(_ tableView: UITableView, editActionsForRowAt indexPath: IndexPath) -> [UITableViewRowAction]? {
+        
+        /* A row has been swiped, so show the appropriate options. */
+        guard let conv = sortedConversations?[indexPath.row]  else { return nil }
+        
+        /* Leave option. */
+        let leave = UITableViewRowAction(style: .normal, title: "Leave", handler: { (_, indexPath: IndexPath!) -> Void in
+            /* Issue leave. */
+            _ = conv.leave().subscribe(onSuccess: { [weak self] in
+                self?.reloadData()
+            })
+        })
+        
+        leave.backgroundColor = UIColor.red
+        
+        return [leave]
     }
-
+    
+    public override func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {
+        /* Dont allow editing (i.e. show leave button) if already left the conversation */
+        guard let conv = sortedConversations?[indexPath.row]  else { return false }
+        return !(conv.state == .left)
+    }
+    
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         performSegue(withIdentifier: "viewConversation", sender: indexPath)
         
