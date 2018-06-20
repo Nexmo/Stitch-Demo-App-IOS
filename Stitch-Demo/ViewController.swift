@@ -18,23 +18,42 @@ class ViewController: UIViewController {
     let client: ConversationClient = {
         return ConversationClient.instance
     }()
+    let introText = "Welcome to Awesome Chat. Click the Get Started button!"
     @IBOutlet weak var infoLabel: UILabel!
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        infoLabel.text = "Welcome to Awesome Chat. Click the Get Started button!"
+        infoLabel.text = introText
     }
     
-    override func viewDidAppear(_ animated: Bool) {
-        updateLogoutState()
-        
-
-        super.viewDidAppear(animated)
+    override func viewWillAppear(_ animated: Bool) {
+        client.account.state.subscribe(onSuccess: { (account_state) in
+            DispatchQueue.main.async {
+                print("account_state",account_state)
+                switch account_state {
+                case  .loggedIn(let session):
+                    self.logoutButton.isEnabled = true
+                    self.infoLabel.text = "User " + (session.name) + " Logged in"
+                    break
+                case .loggedOut:
+                    self.infoLabel.text = self.introText
+                    self.logoutButton.isEnabled = true
+                    break
+                }
+            }
+            
+        }) { (_) in }
+        super.viewWillAppear(animated)
+    }
+    
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        client.account.state.unsubscribe()
     }
 
     @IBAction func logoutAction(_ sender: Any) {
         client.logout()
-        updateLogoutState()
+        infoLabel.text = introText
         
         let alert = UIAlertController(title: "Logout Successful", message: nil, preferredStyle:.alert)
         alert.addAction(UIAlertAction(title: "OK", style: .cancel, handler: nil))
@@ -58,12 +77,6 @@ class ViewController: UIViewController {
     }
     
     @IBAction func chatAction(_ sender: Any) {
-        guard self.client.account.user != nil else {
-            let alert = UIAlertController(title: "LOGIN", message: "The `.user` property on self.client.account is nil", preferredStyle: .alert)
-            alert.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
-            self.present(alert, animated: true, completion: nil)
-            return print("DEMO - chat self.client.account.user is nil");
-        }
         performSegue(withIdentifier: "listConversations", sender: nil)
     }
     
@@ -104,13 +117,6 @@ class ViewController: UIViewController {
             self.present(alert, animated: true)
         }
     }
-    func updateLogoutState() {
-        self.logoutButton.isEnabled = (client.account.user != nil)
-        if (client.account.user != nil) {
-            self.infoLabel.text = "User " + (client.account.user?.name)! + " Logged in"
-        }
-
-    }
     
     func doLogin(_ token:String) {
         
@@ -118,21 +124,13 @@ class ViewController: UIViewController {
         
         client.login(with: token).subscribe(onSuccess: {
             DispatchQueue.main.async {
-
                 print("DEMO - login susbscribing with token.")
                 print("self.client.account", self.client.account)
-                //TODO: self.client.account.user is nill
-                if let user = self.client.account.user {
-
-                    print("DEMO - login successful and here is our \(user)")
-                } // insert activity indicator to track subscription
-                self.updateLogoutState()
             }
             
         }, onError: { [weak self] error in
             
             print(error.localizedDescription)
-            self?.updateLogoutState()
 
             
             // remove to a function
