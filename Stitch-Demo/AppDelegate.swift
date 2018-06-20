@@ -3,7 +3,7 @@
 //  Stitch-Demo
 //
 //  Created by Tony Hung on 6/11/18.
-//  Copyright © 2018 Tony Hung. All rights reserved.
+//  Copyright © 2018 Nexmo. All rights reserved.
 //
 
 import UIKit
