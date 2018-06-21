@@ -25,11 +25,7 @@ class ConversationInfoViewController: UIViewController, MemberCellDelegate, User
     var availableUsers = [JSON]()
     var allUsers:JSON?
     var members:[Member]?
-    var audioConnected = false
     var currentCall:Call?
-    
-    
-
     
     
     @IBAction func doneAction(_ sender: Any) {
@@ -46,7 +42,6 @@ class ConversationInfoViewController: UIViewController, MemberCellDelegate, User
             }
         }
         
-        
         conversation?.members.asObservable.subscribe { state in
             DispatchQueue.main.async {
                 self.loadUsers()
@@ -56,6 +51,10 @@ class ConversationInfoViewController: UIViewController, MemberCellDelegate, User
                 case .left(let member):  print("\(member) left"); break
                 }
             }
+        }
+        
+        if (conversation?.media.state.value == Media.State.connected) {
+            self.joinCallButton.setTitle("Disconnect Audio Call", for: .normal)
         }
         
     }
@@ -86,7 +85,7 @@ class ConversationInfoViewController: UIViewController, MemberCellDelegate, User
 
     @IBAction func joinAudioAction(_ sender: Any) {
         
-        if (!audioConnected) {
+        if (conversation?.media.state.value != Media.State.connected) {
             connectAudio()
         } else {
             disconnectAudio()
@@ -136,7 +135,6 @@ class ConversationInfoViewController: UIViewController, MemberCellDelegate, User
                     // if you would like to display a UI for calling...
                     self.currentCall = result.call
                     cell.callButton.setTitle("In Progress", for: .normal)
-                    self.audioConnected = true
                     result.call.loudspeaker = true
                 }, onError: { networkError in
                     print("error",networkError)
@@ -187,13 +185,10 @@ class ConversationInfoViewController: UIViewController, MemberCellDelegate, User
                             print("connectAudio State \(state.rawValue)")
                             if (state == Media.State.connecting) {
                                 self.toast(title: "Connecting")
-                                self.joinCallButton.setTitle("Connecting", for: .normal)
                             } else if (state == Media.State.connected) {
-                                self.audioConnected = true
-                                self.joinCallButton.setTitle("Connected", for: .normal)
+                                self.joinCallButton.setTitle("Disconnect Audio Call", for: .normal)
                                 self.toast(title: "Connected")
                             } else if (state == Media.State.disconnected || state == Media.State.failed) {
-                                self.audioConnected = false
                                 self.joinCallButton.setTitle("Join Audio Call", for: .normal)
                                 self.toast(title: "Disconnected")
                             } else {
@@ -207,8 +202,7 @@ class ConversationInfoViewController: UIViewController, MemberCellDelegate, User
                     })
                 } catch let error {
                     print("enableAudio error", error)
-                    self.joinCallButton.titleLabel?.text = error.localizedDescription
-                    
+                    self.disconnectAudio()
                 }
             }
         }
@@ -218,7 +212,6 @@ class ConversationInfoViewController: UIViewController, MemberCellDelegate, User
         
         //TODO: CSI-783
         self.conversation?.media.disable()
-        self.audioConnected = false
         print("audio disconnected")
         self.joinCallButton.setTitle("Join Audio Call", for: .normal)
     }

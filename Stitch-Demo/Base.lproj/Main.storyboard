@@ -291,9 +291,8 @@
                                     <rect key="frame" x="0.0" y="207.5" width="375" height="135"/>
                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                     <subviews>
-                                        <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Hf1-sI-sxR">
-                                            <rect key="frame" x="115" y="88" width="144" height="30"/>
-                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                        <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Hf1-sI-sxR">
+                                            <rect key="frame" x="8" y="88" width="359" height="30"/>
                                             <fontDescription key="fontDescription" type="boldSystem" pointSize="15"/>
                                             <state key="normal" title="Leave Conversation">
                                                 <color key="titleColor" red="1" green="0.14913141730000001" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
@@ -302,9 +301,8 @@
                                                 <action selector="leaveConvAction:" destination="b6s-jI-ZIa" eventType="touchUpInside" id="Ze1-fe-Q6x"/>
                                             </connections>
                                         </button>
-                                        <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Rvb-4K-zCj">
-                                            <rect key="frame" x="136" y="50" width="102" height="30"/>
-                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                        <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Rvb-4K-zCj">
+                                            <rect key="frame" x="8" y="50" width="359" height="30"/>
                                             <state key="normal" title="Join Audio Call"/>
                                             <connections>
                                                 <action selector="joinAudioAction:" destination="b6s-jI-ZIa" eventType="touchUpInside" id="qUP-b7-p0a"/>
@@ -312,6 +310,14 @@
                                         </button>
                                     </subviews>
                                     <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                    <constraints>
+                                        <constraint firstAttribute="trailing" secondItem="Hf1-sI-sxR" secondAttribute="trailing" constant="8" id="FnN-pF-4V5"/>
+                                        <constraint firstAttribute="bottom" secondItem="Hf1-sI-sxR" secondAttribute="bottom" constant="17" id="Mky-Mx-ANP"/>
+                                        <constraint firstItem="Hf1-sI-sxR" firstAttribute="leading" secondItem="eV8-cW-f6F" secondAttribute="leading" constant="8" id="ROX-bs-FA5"/>
+                                        <constraint firstItem="Rvb-4K-zCj" firstAttribute="leading" secondItem="eV8-cW-f6F" secondAttribute="leading" constant="8" id="gBe-Nk-RaO"/>
+                                        <constraint firstAttribute="trailing" secondItem="Rvb-4K-zCj" secondAttribute="trailing" constant="8" id="hgG-H5-dds"/>
+                                        <constraint firstItem="Rvb-4K-zCj" firstAttribute="top" secondItem="eV8-cW-f6F" secondAttribute="top" constant="50" id="pit-tY-j6a"/>
+                                    </constraints>
                                 </view>
                                 <prototypes>
                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="memberCell" rowHeight="90" id="giF-EI-w4E" customClass="MemberCell" customModule="Stitch_Demo" customModuleProvider="target">
