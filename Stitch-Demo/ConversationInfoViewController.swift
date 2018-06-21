@@ -9,7 +9,6 @@
 import UIKit
 import Stitch
 import SwiftyJSON
-import AVFoundation
 
 class ConversationInfoViewController: UIViewController, MemberCellDelegate, UserCellDelegate {
    
@@ -115,6 +114,18 @@ class ConversationInfoViewController: UIViewController, MemberCellDelegate, User
         guard let member = cell.member else {
             return
         }
+        let storyboard = UIStoryboard(name: UIStoryboard.Storyboard.main.filename, bundle: nil)
+        let vc = storyboard.instantiateViewController(withIdentifier: "CallViewController") as! CallViewController
+        vc.caller = member.user.name
+        
+        let nav = UINavigationController(rootViewController: vc)
+        self.present(nav, animated: true, completion: nil)
+        return
+
+        
+
+        
+        
         if (currentCall != nil) {
             print("cant call user, already connected")
             currentCall?.hangUp(onSuccess: {
@@ -129,7 +140,7 @@ class ConversationInfoViewController: UIViewController, MemberCellDelegate, User
             currentCall = nil
             return
         }
-        requestAudioPermission { (success) in
+        AudioController.shared.requestAudioPermission { (success) in
             if (success) {
                 self.client.media.call([member.user.name], onSuccess: { result in
                     // if you would like to display a UI for calling...
@@ -177,7 +188,7 @@ class ConversationInfoViewController: UIViewController, MemberCellDelegate, User
     }
     
     private func connectAudio() {
-        requestAudioPermission { (success) in
+        AudioController.shared.requestAudioPermission { (success) in
             if (success) {
                 do {
                     try self.conversation?.media.enable().subscribe(onSuccess: { (state) in
@@ -215,23 +226,6 @@ class ConversationInfoViewController: UIViewController, MemberCellDelegate, User
         print("audio disconnected")
         self.joinCallButton.setTitle("Join Audio Call", for: .normal)
     }
-    
-    private func requestAudioPermission(completion: @escaping (_ success:Bool) -> Void) {
-        
-        do {
-            let session = AVAudioSession.sharedInstance()
-            
-            try session.setCategory(AVAudioSessionCategoryPlayAndRecord)
-            session.requestRecordPermission { (success) in
-                completion(success)
-            }
-        } catch  {
-            print(error)
-            completion(false)
-
-        }
-    }
-
 
 }
 
@@ -295,10 +289,11 @@ class MemberCell:UITableViewCell {
         didSet {
             userName.text = member?.user.name
             userID.text = member?.user.uuid
-            
+            callButton.isEnabled = true
+
             if ( member?.user.isMe)! {
                 userName.font = UIFont.boldSystemFont(ofSize: 15)
-                
+                callButton.isEnabled = false
             }
         }
     }
