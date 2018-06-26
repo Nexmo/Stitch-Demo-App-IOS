@@ -9,13 +9,10 @@
 import Foundation
 import UIKit
 extension UIViewController {
-    func toast(title:String, message:String? = nil, duration:Double = 0.5) {
-        let toast = UIAlertController(title: title, message: message, preferredStyle: .alert)
-        self.present(toast, animated: true)
-        let time: DispatchTime = .now() + duration
-
-        DispatchQueue.main.asyncAfter(deadline:time) {
-            self.dismiss(animated: true, completion: nil)
-        }
+    func presentAlert(title:String, message:String? = nil) {
+        let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
+        alert.addAction(UIAlertAction(title: "OK", style: .cancel, handler: nil))
+        self.present(alert, animated: true)
+        
     }
 }

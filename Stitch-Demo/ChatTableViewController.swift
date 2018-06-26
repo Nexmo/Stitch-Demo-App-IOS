@@ -32,24 +32,28 @@ class ChatTableViewController: UIViewController, UITextFieldDelegate, UIImagePic
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        self.navigationItem.title = conversation?.name
+
         // Create the info button
         let infoButton = UIButton(type: .infoLight)
         infoButton.addTarget(self, action: #selector(getInfo(_:)), for: .touchUpInside)
         let infoBarButtonItem = UIBarButtonItem(customView: infoButton)
         self.navigationItem.rightBarButtonItem = infoBarButtonItem
         
-        
-        //TODO: listen to call events
-        
+
         inputTextField.becomeFirstResponder()
         tableView.keyboardDismissMode = .interactive
         
         setupKeyboardObservers()
     
+    }
     
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        
         // listen for messages
-    conversation!.events.newEventReceived.subscribe(onSuccess: { event in
-            print("event \(event)")
+        conversation!.events.newEventReceived.subscribe(onSuccess: { event in
+            print("newEventReceived \(event)")
             self.tableView.reloadData()
         })
         
@@ -63,7 +67,11 @@ class ChatTableViewController: UIViewController, UITextFieldDelegate, UIImagePic
                     print("error")
                 })
         }
-
+        
+    }
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        
     }
     
     @objc func getInfo(_ sender:UIBarButtonItem) {
@@ -100,15 +108,14 @@ class ChatTableViewController: UIViewController, UITextFieldDelegate, UIImagePic
     }
     
     //Mark UIImagePickerControllerDelegate
-   
     func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String : Any]) {
     
-        guard let pickedImage = info[UIImagePickerControllerOriginalImage] as? UIImage, let imageData = UIImagePNGRepresentation(pickedImage) else {
+        guard let image = info[UIImagePickerControllerOriginalImage] as? UIImage, let data = UIImageJPEGRepresentation(image, 1.0) else {
             return
         }
         do {
             // send method
-            try conversation?.send(imageData)
+            try conversation?.send(data)
             tableView.reloadData()
             self.inputTextField.text = nil
             self.view.endEditing(true)

@@ -22,23 +22,23 @@ class ConversationsTableViewController: UITableViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        self.navigationItem.title = "Conversations"
+
+        self.navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(createConversation(_:)))
+        self.reloadData()
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
         
-        client.conversation.conversations.conversationsChangesObjc(onInserted: { (_) in
-            print("conversations inserted")
-            self.reloadData()
-        }, onInsertedWithInvitedBy: { (_, _, _) in
-            print("conversations inserted with invite")
-            self.reloadData()
-        }, onUpdated: { (_) in
-            print("conversations updated")
-            self.reloadData()
-        }) { (_) in
-            print("conversations deleted")
+        client.conversation.conversations.asObservable.subscribe { (result) in
             self.reloadData()
         }
-        self.reloadData()
-        
-        self.navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(createConversation(_:)))
+    }
+    
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        client.conversation.conversations.asObservable.unsubscribe()
     }
     
     func reloadData() {
@@ -46,10 +46,7 @@ class ConversationsTableViewController: UITableViewController {
         tableView.reloadData()
     }
     
-    override func viewWillAppear(_ animated: Bool) {
-        self.navigationItem.title = "Conversations"
-        super.viewWillAppear(animated)
-    }
+    
 
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
@@ -73,6 +70,7 @@ class ConversationsTableViewController: UITableViewController {
         self.client.conversation.new(with: text, shouldJoin: true, { (conversation) in
             print("success")
             DispatchQueue.main.async {
+                self.presentAlert(title: "Conversation Created")
                 self.sortedConversations = self.client.conversation.conversations.sorted(by: { $0.creationDate.compare($1.creationDate) == .orderedDescending })
                 self.tableView.reloadData()
             }
@@ -143,8 +141,10 @@ class ConversationsTableViewController: UITableViewController {
     // In a storyboard-based application, you will often want to do a little preparation before navigation
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if segue.identifier == "viewConversation" {
-            let row = (sender as! IndexPath).row;
-            let conv = client.conversation.conversations[row] as Conversation
+            guard let row = (sender as? IndexPath)?.row, let conv = sortedConversations?[row] else {
+                return
+            }
+            
             let chatVC = segue.destination as? ChatTableViewController
             chatVC?.conversation = conv
         }
