@@ -23,9 +23,9 @@ class ConversationInfoViewController: UIViewController, MemberCellDelegate, User
     var conversation: Conversation?
     var availableUsers = [JSON]()
     var allUsers:JSON?
-    var members:[Member]?
     var currentCall:Call?
     
+    var members:[Member]?
     
     @IBAction func doneAction(_ sender: Any) {
         self.dismiss(animated: true, completion: nil)
@@ -34,23 +34,16 @@ class ConversationInfoViewController: UIViewController, MemberCellDelegate, User
     override func viewDidLoad() {
         super.viewDidLoad()
     
+        self.navigationItem.title = conversation?.name
+        
+        //TODO: load users only once
         Nexmo.shared.getUsers { (error, json) in
             DispatchQueue.main.async {
                 self.allUsers = json
                 self.loadUsers()
             }
         }
-        
-        conversation?.members.asObservable.subscribe { state in
-            DispatchQueue.main.async {
-                self.loadUsers()
-                switch state {
-                case .invited(let member): print("\(member) invited"); break
-                case .joined(let member):  print("\(member) joined"); break
-                case .left(let member):  print("\(member) left"); break
-                }
-            }
-        }
+        self.loadUsers()
         
         if (conversation?.media.state.value == Media.State.connected) {
             self.joinCallButton.setTitle("Disconnect Audio Call", for: .normal)
@@ -58,23 +51,40 @@ class ConversationInfoViewController: UIViewController, MemberCellDelegate, User
         
     }
     
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        conversation?.members.asObservable.subscribe({ (member_state) in
+            print("member_state",member_state)
+            self.loadUsers()
+        })
+    }
+    override func viewDidDisappear(_ animated: Bool) {
+        super.viewDidDisappear(animated)
+        conversation?.members.asObservable.unsubscribe()
+    }
+    
     
     func loadUsers() {
-        guard let allUsers = self.allUsers else {
-            return
-        }
         
-        self.availableUsers.removeAll()
-        //filter all users from users already in conversation
-        for (_,user):(String, JSON) in allUsers {
-            let member = self.conversation?.members.filter({ (member) -> Bool in
-                return member.user.name == user["name"].stringValue
-            }).first
+        members = self.conversation?.members.filter({ (member) -> Bool in
+            return member.state == .joined
+        })
+        
+        if self.allUsers != nil {
+            self.availableUsers.removeAll()
             
-            if (member == nil) {
-                self.availableUsers.append(user)
+            //filter all users from users already jonied in conversation
+            for (_,user):(String, JSON) in allUsers! {
+                let member = members?.filter({ (member) -> Bool in
+                    return member.user.name == user["name"].stringValue
+                }).first
+                
+                if (member == nil) {
+                    self.availableUsers.append(user)
+                }
             }
         }
+    
         self.tableView.reloadData()
     }
 
@@ -162,10 +172,11 @@ class ConversationInfoViewController: UIViewController, MemberCellDelegate, User
         guard let member = cell.member else {
             return
         }
+        
         //TODO: kicked user does not get removed from list CSI-781
         member.kick({
             print("kicked")
-            self.conversation?.requireSync = true
+            self.presentAlert(title: member.user.name + " removed")
         }) { (error) in
             print("kick error", error)
         }
@@ -178,12 +189,11 @@ class ConversationInfoViewController: UIViewController, MemberCellDelegate, User
             return
         }
         
-        //TODO: using memberId returned error
-        conversation?.join(username: user["name"].stringValue, memberId:nil, onSuccess: {
-            print("user added")
-            self.conversation?.requireSync = true
+        self.conversation?.join(username: user["name"].stringValue).subscribe(onSuccess: { (_) in
+            self.presentAlert(title: "User Added")
+
         }, onError: { (error) in
-            print("user add error", error)
+            self.presentAlert(title: "Error Adding User", message: error.localizedDescription)
         })
     }
     
@@ -195,13 +205,10 @@ class ConversationInfoViewController: UIViewController, MemberCellDelegate, User
                         DispatchQueue.main.async {
                             print("connectAudio State \(state.rawValue)")
                             if (state == Media.State.connecting) {
-                                self.toast(title: "Connecting")
                             } else if (state == Media.State.connected) {
                                 self.joinCallButton.setTitle("Disconnect Audio Call", for: .normal)
-                                self.toast(title: "Connected")
                             } else if (state == Media.State.disconnected || state == Media.State.failed) {
                                 self.joinCallButton.setTitle("Join Audio Call", for: .normal)
-                                self.toast(title: "Disconnected")
                             } else {
                                 
                             }
@@ -226,6 +233,13 @@ class ConversationInfoViewController: UIViewController, MemberCellDelegate, User
         print("audio disconnected")
         self.joinCallButton.setTitle("Join Audio Call", for: .normal)
     }
+    
+    private func invite(userId: String?, username: String, withAudio audio: Bool) {
+        conversation?.invite(username, userId: userId, with: audio ? .audio(muted: false, earmuffed: false) : nil)
+            .subscribe(onError: { [weak self] _ in
+                self?.presentAlert(title: "Error", message: "Failed to invite user")
+            })
+    }
 
 }
 
@@ -239,7 +253,7 @@ extension ConversationInfoViewController: UITableViewDelegate, UITableViewDataSo
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         if (section == 0) {
-            return (conversation?.members.count)!
+            return members?.count ?? 0
         } else {
             return availableUsers.count
         }
@@ -251,8 +265,7 @@ extension ConversationInfoViewController: UITableViewDelegate, UITableViewDataSo
         if (indexPath.section == 0) {
             let cell = tableView.dequeueReusableCell(withIdentifier: "memberCell", for: indexPath) as! MemberCell
             cell.delegate = self
-            let member = conversation?.members[indexPath.row]
-            cell.member = member
+            cell.member = members?[indexPath.row]
             return cell
         } else {
             let cell = tableView.dequeueReusableCell(withIdentifier: "userCell", for: indexPath) as! UserCell
@@ -263,9 +276,7 @@ extension ConversationInfoViewController: UITableViewDelegate, UITableViewDataSo
         }
     }
     
-    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        return 90
-    }
+    
     
     func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
         if (section == 0) {
