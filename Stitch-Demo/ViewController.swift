@@ -85,13 +85,13 @@ class ViewController: UIViewController {
         let alert = UIAlertController(title: "Whats your username", message: nil, preferredStyle: .alert)
         
         alert.addAction(UIAlertAction(title: "Create User", style: .default, handler: { (action) in
-            //TODO: create user
             let textField = alert.textFields![0] as UITextField
-            //TODO: add spinner to indicate loading
+            self.showHUD()
             Nexmo.shared.createUser(textField.text!, completion: { (success) in
                 DispatchQueue.main.async {
                     if (success) {
                         Nexmo.shared.authenticateUser(textField.text!, completion: { (error, json) in
+                            self.hideHUD()
                             let token = json["user_jwt"].stringValue
                             print(token)
                             self.doLogin(token)
@@ -113,12 +113,14 @@ class ViewController: UIViewController {
     func getUsers() {
         let alert = UIAlertController(title: "Select User", message: nil, preferredStyle:.actionSheet)
 
+        showHUD()
         Nexmo.shared.getUsers { (error, json) in
+            self.hideHUD()
             for (_,user):(String, JSON) in json {
                 print(user)
                 alert.addAction(UIAlertAction(title: user["name"].stringValue, style: .default, handler: { (action) in
                     print("selected", user["href"])
-                    
+                    self.showHUD()
                     Nexmo.shared.authenticateUser(user["name"].stringValue, completion: { (error, json) in
                         let token = json["user_jwt"].stringValue
                         print(token)
@@ -134,10 +136,10 @@ class ViewController: UIViewController {
     func doLogin(_ token:String) {
         
         print("DEMO - login called on client.")
-        
         client.login(with: token).subscribe(onSuccess: {
             DispatchQueue.main.async {
-                //TODO: add alert when login is successful
+                self.hideHUD()
+                self.presentAlert(title: "Login Successful")
                 print("DEMO - login susbscribing with token.")
                 print("self.client.account", self.client.account)
             }

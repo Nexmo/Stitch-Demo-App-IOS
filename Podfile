@@ -7,4 +7,5 @@ target 'Stitch-Demo' do
   # pod for Nexmo Stitch iOS SDK
   pod 'Nexmo-Stitch'
 pod 'SwiftyJSON', '~> 4.0'
+pod 'MBProgressHUD', '~> 1.1.0'
 end
