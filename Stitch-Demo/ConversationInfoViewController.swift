@@ -58,14 +58,17 @@ class ConversationInfoViewController: UIViewController, MemberCellDelegate, User
             self.loadUsers()
         })
     }
-    override func viewDidDisappear(_ animated: Bool) {
-        super.viewDidDisappear(animated)
+    
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
         conversation?.members.asObservable.unsubscribe()
+//        disconnectAudio()
     }
     
     
     func loadUsers() {
         
+        //show only members that are currently in conversation
         members = self.conversation?.members.filter({ (member) -> Bool in
             return member.state == .joined
         })
@@ -130,42 +133,6 @@ class ConversationInfoViewController: UIViewController, MemberCellDelegate, User
         
         let nav = UINavigationController(rootViewController: vc)
         self.present(nav, animated: true, completion: nil)
-        return
-
-        
-
-        
-        
-        if (currentCall != nil) {
-            print("cant call user, already connected")
-            currentCall?.hangUp(onSuccess: {
-                print("Call hangUp from dismiss of view controller")
-                cell.callButton.setTitle("Call", for: .normal)
-            }, onError: { error in
-                print("Call hangup failed", error)
-            })
-            
-//            currentCall?.memberState.unsubscribe()
-//            currentCall?.state.unsubscribe()
-            currentCall = nil
-            return
-        }
-        AudioController.shared.requestAudioPermission { (success) in
-            if (success) {
-                self.client.media.call([member.user.name], onSuccess: { result in
-                    // if you would like to display a UI for calling...
-                    self.currentCall = result.call
-                    cell.callButton.setTitle("In Progress", for: .normal)
-                    result.call.loudspeaker = true
-                }, onError: { networkError in
-                    print("error",networkError)
-                    // if you would like to display a log for error...
-                })
-                
-            }
-        }
-    
-
     }
     
     func kickUser(_ cell: MemberCell) {
@@ -229,9 +196,11 @@ class ConversationInfoViewController: UIViewController, MemberCellDelegate, User
     private func disconnectAudio() {
         
         //TODO: CSI-783
-        self.conversation?.media.disable()
-        print("audio disconnected")
-        self.joinCallButton.setTitle("Join Audio Call", for: .normal)
+        if conversation?.media.state.value != .idle {
+            self.conversation?.media.disable()
+            print("audio disconnected")
+            self.joinCallButton.setTitle("Join Audio Call", for: .normal)
+        }
     }
     
     private func invite(userId: String?, username: String, withAudio audio: Bool) {
