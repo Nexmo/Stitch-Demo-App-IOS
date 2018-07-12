@@ -7,10 +7,14 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		450DB75F20DBCBBD00BBCCC5 /* CallViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 450DB75E20DBCBBD00BBCCC5 /* CallViewController.swift */; };
+		450DB76120DBCC6800BBCCC5 /* AudioController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 450DB76020DBCC6800BBCCC5 /* AudioController.swift */; };
+		450DB76320DBDD6D00BBCCC5 /* Storyboard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 450DB76220DBDD6D00BBCCC5 /* Storyboard.swift */; };
 		45128DFB20D2C47500E32222 /* UITableView+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45128DFA20D2C47500E32222 /* UITableView+Extension.swift */; };
 		45128DFF20D2DDB700E32222 /* ConversationInfoViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45128DFE20D2DDB700E32222 /* ConversationInfoViewController.swift */; };
 		451EB24620D92E4C0022F32A /* UIViewController+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 451EB24520D92E4C0022F32A /* UIViewController+Extensions.swift */; };
 		4525DC6F20DAAD16004610BE /* PhotoViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4525DC6E20DAAD16004610BE /* PhotoViewController.swift */; };
+		4543877820F398DF00E09FB2 /* ProgressHUD+extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4543877720F398DF00E09FB2 /* ProgressHUD+extensions.swift */; };
 		45449D5F20D1766C00EF34E2 /* ConversationsTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45449D5E20D1766C00EF34E2 /* ConversationsTableViewController.swift */; };
 		45E9820820D18A07003B6C7B /* ChatTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45E9820720D18A07003B6C7B /* ChatTableViewController.swift */; };
 		45F4524A20CEFF880051294A /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45F4524920CEFF880051294A /* AppDelegate.swift */; };
@@ -24,10 +28,14 @@
 
 /* Begin PBXFileReference section */
 		0139DBADC6A57254B282D395 /* Pods-Stitch-Demo.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Stitch-Demo.release.xcconfig"; path = "Pods/Target Support Files/Pods-Stitch-Demo/Pods-Stitch-Demo.release.xcconfig"; sourceTree = "<group>"; };
+		450DB75E20DBCBBD00BBCCC5 /* CallViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CallViewController.swift; sourceTree = "<group>"; };
+		450DB76020DBCC6800BBCCC5 /* AudioController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioController.swift; sourceTree = "<group>"; };
+		450DB76220DBDD6D00BBCCC5 /* Storyboard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Storyboard.swift; sourceTree = "<group>"; };
 		45128DFA20D2C47500E32222 /* UITableView+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UITableView+Extension.swift"; sourceTree = "<group>"; };
 		45128DFE20D2DDB700E32222 /* ConversationInfoViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConversationInfoViewController.swift; sourceTree = "<group>"; };
 		451EB24520D92E4C0022F32A /* UIViewController+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIViewController+Extensions.swift"; sourceTree = "<group>"; };
 		4525DC6E20DAAD16004610BE /* PhotoViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoViewController.swift; sourceTree = "<group>"; };
+		4543877720F398DF00E09FB2 /* ProgressHUD+extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ProgressHUD+extensions.swift"; sourceTree = "<group>"; };
 		45449D5E20D1766C00EF34E2 /* ConversationsTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ConversationsTableViewController.swift; sourceTree = "<group>"; };
 		45E9820720D18A07003B6C7B /* ChatTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatTableViewController.swift; sourceTree = "<group>"; };
 		45F4524620CEFF880051294A /* Stitch-Demo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Stitch-Demo.app"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -68,6 +76,8 @@
 			children = (
 				45128DFA20D2C47500E32222 /* UITableView+Extension.swift */,
 				451EB24520D92E4C0022F32A /* UIViewController+Extensions.swift */,
+				450DB76220DBDD6D00BBCCC5 /* Storyboard.swift */,
+				4543877720F398DF00E09FB2 /* ProgressHUD+extensions.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -105,6 +115,8 @@
 				45F4525220CEFF8A0051294A /* LaunchScreen.storyboard */,
 				45F4525520CEFF8A0051294A /* Info.plist */,
 				4525DC6E20DAAD16004610BE /* PhotoViewController.swift */,
+				450DB75E20DBCBBD00BBCCC5 /* CallViewController.swift */,
+				450DB76020DBCC6800BBCCC5 /* AudioController.swift */,
 			);
 			path = "Stitch-Demo";
 			sourceTree = "<group>";
@@ -195,6 +207,7 @@
 			inputPaths = (
 				"${SRCROOT}/Pods/Target Support Files/Pods-Stitch-Demo/Pods-Stitch-Demo-frameworks.sh",
 				"${BUILT_PRODUCTS_DIR}/Alamofire/Alamofire.framework",
+				"${BUILT_PRODUCTS_DIR}/MBProgressHUD/MBProgressHUD.framework",
 				"${PODS_ROOT}/Nexmo-Stitch/Carthage/Build/iOS/Stitch.framework",
 				"${PODS_ROOT}/Nexmo-Stitch/Carthage/Build/iOS/Stitch.framework.dSYM",
 				"${BUILT_PRODUCTS_DIR}/NexmoGRDB.swift/GRDB.framework",
@@ -207,6 +220,7 @@
 			name = "[CP] Embed Pods Frameworks";
 			outputPaths = (
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Alamofire.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/MBProgressHUD.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Stitch.framework",
 				"${DWARF_DSYM_FOLDER_PATH}/Stitch.framework.dSYM",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/GRDB.framework",
@@ -246,14 +260,18 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				450DB76120DBCC6800BBCCC5 /* AudioController.swift in Sources */,
 				45F4524C20CEFF880051294A /* ViewController.swift in Sources */,
 				45F6643B20D12756002D8F6E /* Nexmo.swift in Sources */,
+				4543877820F398DF00E09FB2 /* ProgressHUD+extensions.swift in Sources */,
 				451EB24620D92E4C0022F32A /* UIViewController+Extensions.swift in Sources */,
+				450DB76320DBDD6D00BBCCC5 /* Storyboard.swift in Sources */,
 				45449D5F20D1766C00EF34E2 /* ConversationsTableViewController.swift in Sources */,
 				45F4524A20CEFF880051294A /* AppDelegate.swift in Sources */,
 				4525DC6F20DAAD16004610BE /* PhotoViewController.swift in Sources */,
 				45E9820820D18A07003B6C7B /* ChatTableViewController.swift in Sources */,
 				45128DFF20D2DDB700E32222 /* ConversationInfoViewController.swift in Sources */,
+				450DB75F20DBCBBD00BBCCC5 /* CallViewController.swift in Sources */,
 				45128DFB20D2C47500E32222 /* UITableView+Extension.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

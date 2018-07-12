@@ -9,7 +9,7 @@
 import UIKit
 import SwiftyJSON
 class Nexmo: NSObject {
-    let baseURL = "https://aqueous-sea-78840.herokuapp.com/api"
+    let baseURL = "https://stitch-app-ios.herokuapp.com/api"
     
     static let shared = Nexmo()
     
@@ -74,11 +74,14 @@ class Nexmo: NSObject {
                 if let httpResponse = response as? HTTPURLResponse {
                     print("error \(httpResponse.statusCode)")
                     completion(httpResponse.statusCode == 200)
+                } else {
+                    completion(false)
                 }
             }
             task.resume()
             
         }catch{
+            completion(false)
         }
     }
 }

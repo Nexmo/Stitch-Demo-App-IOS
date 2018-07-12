@@ -180,7 +180,6 @@ class ChatTableViewController: UIViewController, UITextFieldDelegate, UIImagePic
     }
     
     private func refreshTypingIndicatorLabel(){
-        //TODO: display on screen
         if !whoIsTyping.isEmpty {
             var caption = whoIsTyping.joined(separator: ", ")
             
@@ -242,6 +241,7 @@ extension ChatTableViewController: UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath)
         cell.backgroundColor = UIColor.white
+        cell.imageView?.image = nil
         cell.accessoryType = UITableViewCellAccessoryType.none
 
         let event = conversation?.events[indexPath.row]
