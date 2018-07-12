@@ -127,12 +127,24 @@ class ConversationInfoViewController: UIViewController, MemberCellDelegate, User
         guard let member = cell.member else {
             return
         }
-        let storyboard = UIStoryboard(name: UIStoryboard.Storyboard.main.filename, bundle: nil)
-        let vc = storyboard.instantiateViewController(withIdentifier: "CallViewController") as! CallViewController
-        vc.caller = member.user.name
         
-        let nav = UINavigationController(rootViewController: vc)
-        self.present(nav, animated: true, completion: nil)
+        AudioController.shared.requestAudioPermission { (success) in
+            if success {
+                self.client.media.call([member.user.name], onSuccess: { [weak self] result in
+                    
+                    let storyboard = UIStoryboard(name: UIStoryboard.Storyboard.main.filename, bundle: nil)
+                    let vc = storyboard.instantiateViewController(withIdentifier: "CallViewController") as! CallViewController
+                    vc.call = result.call
+                    let nav = UINavigationController(rootViewController: vc)
+                    self?.present(nav, animated: true, completion: nil)
+                    
+                    }, onError: { error in
+                        print("Error Calling user", error)
+                })
+            }
+        }
+        
+        
     }
     
     func kickUser(_ cell: MemberCell) {

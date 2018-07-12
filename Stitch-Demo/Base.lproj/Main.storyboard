@@ -111,6 +111,8 @@
                             <outlet property="delegate" destination="rmQ-aX-HHp" id="dyz-3y-YmV"/>
                         </connections>
                     </tableView>
+                    <toolbarItems/>
+                    <simulatedToolbarMetrics key="simulatedBottomBarMetrics"/>
                     <connections>
                         <segue destination="R7U-RE-h84" kind="show" identifier="viewConversation" id="53G-pH-vpn"/>
                     </connections>
@@ -128,7 +130,7 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="wAv-Pt-R9d">
-                                <rect key="frame" x="0.0" y="0.0" width="375" height="612"/>
+                                <rect key="frame" x="0.0" y="0.0" width="375" height="568"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <prototypes>
                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" accessoryType="checkmark" indentationWidth="10" reuseIdentifier="cell" textLabel="mwe-15-TcR" detailTextLabel="26A-Em-v72" style="IBUITableViewCellStyleSubtitle" id="ah3-Hq-b5O">
@@ -162,7 +164,7 @@
                                 </connections>
                             </tableView>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="BCf-V9-zy5">
-                                <rect key="frame" x="0.0" y="612" width="375" height="55"/>
+                                <rect key="frame" x="0.0" y="568" width="375" height="55"/>
                                 <subviews>
                                     <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="elR-Eg-Kca">
                                         <rect key="frame" x="8" y="17" width="256" height="30"/>
@@ -285,7 +287,7 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="grouped" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="18" sectionFooterHeight="18" translatesAutoresizingMaskIntoConstraints="NO" id="Oja-kh-1Tb">
-                                <rect key="frame" x="0.0" y="64" width="375" height="603"/>
+                                <rect key="frame" x="0.0" y="64" width="375" height="559"/>
                                 <color key="backgroundColor" cocoaTouchSystemColor="groupTableViewBackgroundColor"/>
                                 <view key="tableHeaderView" contentMode="scaleToFill" id="eV8-cW-f6F">
                                     <rect key="frame" x="0.0" y="0.0" width="375" height="88"/>
@@ -449,28 +451,36 @@
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="user" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="3It-03-beh">
-                                <rect key="frame" x="16" y="197" width="343" height="21"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="state" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="uWV-p5-CO5">
+                                <rect key="frame" x="16" y="194" width="343" height="99"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="state" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="uWV-p5-CO5">
-                                <rect key="frame" x="16" y="244" width="343" height="21"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="DDO-nh-RNX">
+                                <rect key="frame" x="16" y="64" width="329" height="82"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        <constraints>
+                            <constraint firstItem="uWV-p5-CO5" firstAttribute="top" secondItem="VRR-iM-1BV" secondAttribute="top" constant="130" id="6Y5-5l-KQE"/>
+                            <constraint firstItem="uWV-p5-CO5" firstAttribute="leading" secondItem="nUa-fD-5Gy" secondAttribute="leadingMargin" id="7T7-lE-w7v"/>
+                            <constraint firstItem="VRR-iM-1BV" firstAttribute="bottom" secondItem="uWV-p5-CO5" secondAttribute="bottom" constant="374" id="JhB-8V-Mg6"/>
+                            <constraint firstItem="uWV-p5-CO5" firstAttribute="top" secondItem="DDO-nh-RNX" secondAttribute="bottom" constant="48" id="RCJ-6b-X1M"/>
+                            <constraint firstItem="DDO-nh-RNX" firstAttribute="leading" secondItem="uWV-p5-CO5" secondAttribute="leading" id="Wgs-T5-LgW"/>
+                            <constraint firstItem="DDO-nh-RNX" firstAttribute="top" secondItem="VRR-iM-1BV" secondAttribute="top" id="for-TO-mC8"/>
+                            <constraint firstItem="VRR-iM-1BV" firstAttribute="trailing" secondItem="DDO-nh-RNX" secondAttribute="trailing" constant="30" id="hGB-VY-zUC"/>
+                            <constraint firstItem="uWV-p5-CO5" firstAttribute="trailing" secondItem="nUa-fD-5Gy" secondAttribute="trailingMargin" id="yff-3W-hvg"/>
+                        </constraints>
                         <viewLayoutGuide key="safeArea" id="VRR-iM-1BV"/>
                     </view>
                     <navigationItem key="navigationItem" id="YVi-bw-ONz"/>
                     <connections>
+                        <outlet property="memberStatus" destination="DDO-nh-RNX" id="Ymd-DX-1s1"/>
                         <outlet property="stateLabel" destination="uWV-p5-CO5" id="2wY-8W-fnv"/>
-                        <outlet property="userLabel" destination="3It-03-beh" id="iED-Sz-xYm"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="ziZ-8z-vFr" userLabel="First Responder" sceneMemberID="firstResponder"/>

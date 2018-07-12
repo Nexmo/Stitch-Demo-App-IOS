@@ -18,13 +18,9 @@ class CallViewController: UIViewController {
     }()
     
     
+    @IBOutlet weak var memberStatus: UILabel!
     @IBOutlet weak var stateLabel: UILabel?
     
-    var caller:String? {
-        didSet {
-            self.callUser(caller!)
-        }
-    }
     var call:Call? {
         didSet {
             setup()
@@ -36,6 +32,7 @@ class CallViewController: UIViewController {
         
         self.navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .done, target: self, action:  #selector(close(_:)))
         self.stateLabel?.text = ""
+        self.memberStatus?.text = ""
     }
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
@@ -54,29 +51,35 @@ class CallViewController: UIViewController {
         dismiss(animated: true, completion: nil)
     }
     
-    func callUser(_ user:String) {
-        AudioController.shared.requestAudioPermission { (success) in
-            if success {
-                self.stateLabel?.text = "Calling " + user
-                self.client.media.call([user], onSuccess: { [weak self] result in
-                    self?.call = result.call
-                    }, onError: { error in
-                        print("callUser", error)
-                        self.stateLabel?.text = "Call failed to " + user
-                })
-            }
-        }
-    }
-
     private func setup() {
         guard let call = call else {
             return
+        }
+        let toUsers = call.to.map { $0.user.name }
+        self.stateLabel?.text = "Call from \(call.from?.user.name ?? "Unknown" ) to \(toUsers)"
+
+        call.state.subscribe { state in
+            var currentState: String {
+                switch state {
+                case .started: return "started"
+                case .ringing: return "ringing"
+                case .answered: return "answered"
+                case .rejected: return "rejected"
+                case .busy: return "busy"
+                case .unanswered: return "unanswered"
+                case .timeout: return "timeout"
+                case .failed: return "failed"
+                case .complete: return "completed"
+                case .machine: return "detected answering machine"
+                }
+            }
+            self.stateLabel?.text = "Call \(currentState)"
         }
         
         call.memberState.subscribe { [weak self] event in
             DispatchQueue.main.async {
 
-                var message = self?.stateLabel?.text
+                var message = self?.memberStatus?.text
                 
                 switch event {
                 case .ringing(let member):
@@ -87,14 +90,12 @@ class CallViewController: UIViewController {
                     message = ("Call: member rejected by: \(member.user.name)")
                 case .hangUp(let member):
                     message = ("Call: call hungup by: \(member.user.name)")
-                    
-                    guard self?.call?.to.contains(where: { $0.state == .joined || $0.state == .invited }) == true else {
-                        print("DEMO - Will auto hang up as all other participants have hung up")
+                    if self?.call?.to.contains(where: { $0.state == .joined || $0.state == .invited }) == true {
+                        //hangup when all other participants have hung up
                         self?.hangup()
-                        return
                     }
                 }
-                self?.stateLabel?.text = message
+                self?.memberStatus?.text = message
             }
         }
     }
