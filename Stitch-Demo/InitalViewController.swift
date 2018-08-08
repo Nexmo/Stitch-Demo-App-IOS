@@ -10,23 +10,27 @@ import UIKit
 import Stitch
 import SwiftyJSON
 
-class ViewController: UIViewController {
+class InitalViewController: BaseViewController {
 
-    @IBOutlet weak var logoutButton: UIBarButtonItem!
+    @IBOutlet weak var logoutButton: UIBarButtonItem! {
+        didSet {
+            logoutButton.isEnabled = false
+        }
+    }
     
-    /// Nexmo Conversation client
-    let client: ConversationClient = {
-        return ConversationClient.instance
-    }()
     let introText = "Welcome to Awesome Chat. Click the Get Started button!"
-    @IBOutlet weak var infoLabel: UILabel!
+
+    @IBOutlet weak var infoLabel: UILabel! {
+        didSet {
+            infoLabel.text = introText
+            infoLabel.isEnabled = false
+
+        }
+    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        infoLabel.text = introText
-    }
-    
-    override func viewWillAppear(_ animated: Bool) {
+        
         client.account.state.subscribe(onSuccess: { (account_state) in
             DispatchQueue.main.async {
                 switch account_state {
@@ -42,13 +46,17 @@ class ViewController: UIViewController {
             }
             
         }) { (_) in }
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        
         
         super.viewWillAppear(animated)
     }
     
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
-        client.account.state.unsubscribe()
+//        client.account.state.unsubscribe()
     }
 
     @IBAction func logoutAction(_ sender: Any) {
@@ -94,6 +102,22 @@ class ViewController: UIViewController {
                             self.hideHUD()
                             let token = json["user_jwt"].stringValue
                             print(token)
+                            self.doLogin(token)
+                        })
+                    }
+                }
+            })
+        }))
+        alert.addAction(UIAlertAction(title: "Create User as Admin", style: .default, handler: { (action) in
+            let textField = alert.textFields![0] as UITextField
+            self.showHUD()
+            Nexmo.shared.createUser(textField.text!, admin:true, completion: { (success) in
+                DispatchQueue.main.async {
+                    if (success) {
+                        Nexmo.shared.authenticateUser(textField.text!, completion: { (error, json) in
+                            self.hideHUD()
+                            let token = json["user_jwt"].stringValue
+                            print("user \(textField.text!) token: \(token)")
                             self.doLogin(token)
                         })
                     }

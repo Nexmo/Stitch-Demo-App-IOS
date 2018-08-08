@@ -299,7 +299,7 @@ extension ChatTableViewController: UITableViewDelegate, UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let event = conversation?.events[indexPath.row]
-        
+        tableView.deselectRow(at: indexPath, animated: false)
         if event is ImageEvent {
             performSegue(withIdentifier: "photoViewer", sender: indexPath)
         }

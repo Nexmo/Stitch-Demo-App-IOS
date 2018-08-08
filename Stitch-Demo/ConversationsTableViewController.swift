@@ -66,15 +66,11 @@ class ConversationsTableViewController: UITableViewController {
                 })
             }))
             
-            calling.addAction(UIAlertAction(title: "Reject", style: .destructive, handler: { [weak self] _ in
-                
+            calling.addAction(UIAlertAction(title: "Reject", style: .destructive, handler: { _ in
                 call.reject()
             }))
             
             self?.present(calling, animated: true)
-            
-            
-            
     }
         
         self.reloadData()
@@ -132,9 +128,7 @@ class ConversationsTableViewController: UITableViewController {
                             print("Call user error", error)
                     })
                 }
-            }
-            
-            
+            }            
         }))
         alert.addTextField { (textField) in
             textField.placeholder = "Phone Number"
@@ -184,12 +178,9 @@ class ConversationsTableViewController: UITableViewController {
     
     override func tableView(_ tableView: UITableView, editActionsForRowAt indexPath: IndexPath) -> [UITableViewRowAction]? {
         
-        /* A row has been swiped, so show the appropriate options. */
         guard let conv = sortedConversations?[indexPath.row]  else { return nil }
         
-        /* Leave option. */
         let leave = UITableViewRowAction(style: .normal, title: "Leave", handler: { (_, indexPath: IndexPath!) -> Void in
-            /* Issue leave. */
             _ = conv.leave().subscribe(onSuccess: { [weak self] in
                 self?.reloadData()
             })
@@ -201,20 +192,17 @@ class ConversationsTableViewController: UITableViewController {
     }
     
     public override func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {
-        /* Dont allow editing (i.e. show leave button) if already left the conversation */
         guard let conv = sortedConversations?[indexPath.row]  else { return false }
         return !(conv.state == .left)
     }
     
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         performSegue(withIdentifier: "viewConversation", sender: indexPath)
-        
     }
 
     
     // MARK: - Navigation
 
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if segue.identifier == "viewConversation" {
             guard let row = (sender as? IndexPath)?.row, let conv = sortedConversations?[row] else {
