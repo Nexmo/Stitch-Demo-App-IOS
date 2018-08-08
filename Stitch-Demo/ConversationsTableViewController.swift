@@ -10,13 +10,9 @@ import UIKit
 import Stitch
 
 
-class ConversationsTableViewController: UITableViewController {
+class ConversationsTableViewController: BaseTableViewController {
 
     var sortedConversations:[Conversation]?
-    /// Nexmo Conversation client
-    let client: ConversationClient = {
-        return ConversationClient.instance
-    }()
     var selectedConversation:Conversation?
     
     
@@ -27,9 +23,14 @@ class ConversationsTableViewController: UITableViewController {
         let addButton = UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(createConversation(_:)))
         let callButton = UIBarButtonItem(title: "Call", style: .plain, target: self, action: #selector(makePhoneCall(_:)))
         self.navigationItem.rightBarButtonItems = [addButton, callButton]
+      
         
         client.conversation.conversations.asObservable.subscribe { [weak self] change in
             self?.reloadData()
+        }
+        
+        client.appLifecycle.push.notifications.subscribe { notification in
+                print("Notification received: \(notification)")
         }
         
         client.media.inboundCalls.subscribe { [weak self] call in

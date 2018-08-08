@@ -9,12 +9,7 @@
 import UIKit
 import Stitch
 
-class ChatTableViewController: UIViewController, UITextFieldDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate {
-
-    
-    let client: ConversationClient = {
-        return ConversationClient.instance
-    }()
+class ChatTableViewController: BaseViewController, UITextFieldDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate {
 
     var conversation: Conversation?
     let imagePicker = UIImagePickerController()

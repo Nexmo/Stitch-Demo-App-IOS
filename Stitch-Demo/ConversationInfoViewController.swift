@@ -10,14 +10,9 @@ import UIKit
 import Stitch
 import SwiftyJSON
 
-class ConversationInfoViewController: UIViewController, MemberCellDelegate, UserCellDelegate {
+class ConversationInfoViewController: BaseViewController, MemberCellDelegate, UserCellDelegate {
    
-    
-    /// Nexmo Conversation client
-    let client: ConversationClient = {
-        return ConversationClient.instance
-    }()
-    
+
     @IBOutlet weak var tableView: UITableView!
     @IBOutlet weak var joinCallButton: UIButton!
     var conversation: Conversation?
