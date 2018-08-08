@@ -99,8 +99,13 @@ class ConversationsTableViewController: UITableViewController {
         let alert = UIAlertController(title: "New Conversation", message: nil, preferredStyle: .alert)
         
         alert.addAction(UIAlertAction(title: "Done", style: .default, handler: { (action) in
-            let textField = alert.textFields![0] as UITextField
-            self.newConversation(textField.text!)
+            guard let converstationTitle = alert.textFields?.first?.text else {
+                return
+            }
+            
+            if !converstationTitle.isEmpty {
+                self.newConversation(converstationTitle)
+            }
         }))
         alert.addTextField { (textField) in
             textField.placeholder = "Enter name for conversation"

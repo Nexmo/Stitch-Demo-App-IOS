@@ -63,6 +63,7 @@
                         </barButtonItem>
                     </navigationItem>
                     <connections>
+                        <outlet property="chatButton" destination="MXk-j3-ymM" id="L9y-sU-gk8"/>
                         <outlet property="infoLabel" destination="9yI-4q-xS6" id="8ZM-7m-Ou8"/>
                         <outlet property="logoutButton" destination="6Pc-Qm-0h4" id="HCn-uj-WWq"/>
                         <segue destination="rmQ-aX-HHp" kind="show" identifier="listConversations" id="y2c-vo-eHg"/>

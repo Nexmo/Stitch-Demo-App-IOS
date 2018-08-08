@@ -14,7 +14,6 @@
 		45128DFF20D2DDB700E32222 /* ConversationInfoViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45128DFE20D2DDB700E32222 /* ConversationInfoViewController.swift */; };
 		451EB24620D92E4C0022F32A /* UIViewController+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 451EB24520D92E4C0022F32A /* UIViewController+Extensions.swift */; };
 		4525DC6F20DAAD16004610BE /* PhotoViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4525DC6E20DAAD16004610BE /* PhotoViewController.swift */; };
-		452DC80520F8C3B500CE6E3C /* LocalNotfication.swift in Sources */ = {isa = PBXBuildFile; fileRef = 452DC80420F8C3B500CE6E3C /* LocalNotfication.swift */; };
 		4543877820F398DF00E09FB2 /* ProgressHUD+extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4543877720F398DF00E09FB2 /* ProgressHUD+extensions.swift */; };
 		45449D5F20D1766C00EF34E2 /* ConversationsTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45449D5E20D1766C00EF34E2 /* ConversationsTableViewController.swift */; };
 		45E9820820D18A07003B6C7B /* ChatTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45E9820720D18A07003B6C7B /* ChatTableViewController.swift */; };
@@ -37,8 +36,6 @@
 		45128DFE20D2DDB700E32222 /* ConversationInfoViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConversationInfoViewController.swift; sourceTree = "<group>"; };
 		451EB24520D92E4C0022F32A /* UIViewController+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIViewController+Extensions.swift"; sourceTree = "<group>"; };
 		4525DC6E20DAAD16004610BE /* PhotoViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoViewController.swift; sourceTree = "<group>"; };
-		452DC7FF20F8BFB400CE6E3C /* Stitch-Demo.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = "Stitch-Demo.entitlements"; sourceTree = "<group>"; };
-		452DC80420F8C3B500CE6E3C /* LocalNotfication.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalNotfication.swift; sourceTree = "<group>"; };
 		4543877720F398DF00E09FB2 /* ProgressHUD+extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ProgressHUD+extensions.swift"; sourceTree = "<group>"; };
 		45449D5E20D1766C00EF34E2 /* ConversationsTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ConversationsTableViewController.swift; sourceTree = "<group>"; };
 		45E9820720D18A07003B6C7B /* ChatTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatTableViewController.swift; sourceTree = "<group>"; };
@@ -108,11 +105,9 @@
 		45F4524820CEFF880051294A /* Stitch-Demo */ = {
 			isa = PBXGroup;
 			children = (
-				452DC7FF20F8BFB400CE6E3C /* Stitch-Demo.entitlements */,
 				45128DF920D2C46000E32222 /* Extensions */,
 				45F6643A20D12756002D8F6E /* Nexmo.swift */,
 				45F4524920CEFF880051294A /* AppDelegate.swift */,
-				452DC80420F8C3B500CE6E3C /* LocalNotfication.swift */,
 				45F4524B20CEFF880051294A /* InitalViewController.swift */,
 				45449D5E20D1766C00EF34E2 /* ConversationsTableViewController.swift */,
 				45E9820720D18A07003B6C7B /* ChatTableViewController.swift */,
@@ -174,10 +169,10 @@
 						ProvisioningStyle = Automatic;
 						SystemCapabilities = {
 							com.apple.BackgroundModes = {
-								enabled = 1;
+								enabled = 0;
 							};
 							com.apple.Push = {
-								enabled = 1;
+								enabled = 0;
 							};
 						};
 					};
@@ -285,7 +280,6 @@
 				450DB76320DBDD6D00BBCCC5 /* Storyboard.swift in Sources */,
 				45449D5F20D1766C00EF34E2 /* ConversationsTableViewController.swift in Sources */,
 				45F4524A20CEFF880051294A /* AppDelegate.swift in Sources */,
-				452DC80520F8C3B500CE6E3C /* LocalNotfication.swift in Sources */,
 				4525DC6F20DAAD16004610BE /* PhotoViewController.swift in Sources */,
 				45E9820820D18A07003B6C7B /* ChatTableViewController.swift in Sources */,
 				45128DFF20D2DDB700E32222 /* ConversationInfoViewController.swift in Sources */,
@@ -434,7 +428,6 @@
 			baseConfigurationReference = D5CF9A012860EB8F110794C4 /* Pods-Stitch-Demo.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				CODE_SIGN_ENTITLEMENTS = "Stitch-Demo/Stitch-Demo.entitlements";
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = E37FZSUGQP;
 				ENABLE_BITCODE = NO;
@@ -453,7 +446,6 @@
 			baseConfigurationReference = 0139DBADC6A57254B282D395 /* Pods-Stitch-Demo.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				CODE_SIGN_ENTITLEMENTS = "Stitch-Demo/Stitch-Demo.entitlements";
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = E37FZSUGQP;
 				ENABLE_BITCODE = NO;

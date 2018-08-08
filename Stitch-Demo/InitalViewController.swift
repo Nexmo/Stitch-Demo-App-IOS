@@ -12,19 +12,24 @@ import SwiftyJSON
 
 class InitalViewController: BaseViewController {
 
+    let introText = "Welcome to Awesome Chat. Click the Get Started button!"
+
     @IBOutlet weak var logoutButton: UIBarButtonItem! {
         didSet {
             logoutButton.isEnabled = false
         }
     }
     
-    let introText = "Welcome to Awesome Chat. Click the Get Started button!"
-
     @IBOutlet weak var infoLabel: UILabel! {
         didSet {
             infoLabel.text = introText
             infoLabel.isEnabled = false
 
+        }
+    }
+    @IBOutlet weak var chatButton: UIButton! {
+        didSet {
+            chatButton.isEnabled = false
         }
     }
     
@@ -36,11 +41,13 @@ class InitalViewController: BaseViewController {
                 switch account_state {
                 case  .loggedIn(let session):
                     self.logoutButton.isEnabled = true
+                    self.chatButton.isEnabled =  true
                     self.infoLabel.text = "User " + (session.name) + " Logged in"
                     break
                 case .loggedOut:
                     self.infoLabel.text = self.introText
                     self.logoutButton.isEnabled = true
+                    self.chatButton.isEnabled =  false
                     break
                 }
             }
@@ -49,8 +56,6 @@ class InitalViewController: BaseViewController {
     }
     
     override func viewWillAppear(_ animated: Bool) {
-        
-        
         super.viewWillAppear(animated)
     }
     
