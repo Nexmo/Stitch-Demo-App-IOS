@@ -16,6 +16,7 @@
 		4525DC6F20DAAD16004610BE /* PhotoViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4525DC6E20DAAD16004610BE /* PhotoViewController.swift */; };
 		4543877820F398DF00E09FB2 /* ProgressHUD+extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4543877720F398DF00E09FB2 /* ProgressHUD+extensions.swift */; };
 		45449D5F20D1766C00EF34E2 /* ConversationsTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45449D5E20D1766C00EF34E2 /* ConversationsTableViewController.swift */; };
+		4594F2102124AF3D00611D95 /* CIFAR.mlmodel in Sources */ = {isa = PBXBuildFile; fileRef = 4594F20F2124AF3D00611D95 /* CIFAR.mlmodel */; };
 		45E9820820D18A07003B6C7B /* ChatTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45E9820720D18A07003B6C7B /* ChatTableViewController.swift */; };
 		45F10CAA2110774E0032CB1C /* BaseViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45F10CA92110774E0032CB1C /* BaseViewController.swift */; };
 		45F4524A20CEFF880051294A /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45F4524920CEFF880051294A /* AppDelegate.swift */; };
@@ -38,6 +39,7 @@
 		4525DC6E20DAAD16004610BE /* PhotoViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoViewController.swift; sourceTree = "<group>"; };
 		4543877720F398DF00E09FB2 /* ProgressHUD+extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ProgressHUD+extensions.swift"; sourceTree = "<group>"; };
 		45449D5E20D1766C00EF34E2 /* ConversationsTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ConversationsTableViewController.swift; sourceTree = "<group>"; };
+		4594F20F2124AF3D00611D95 /* CIFAR.mlmodel */ = {isa = PBXFileReference; lastKnownFileType = file.mlmodel; path = CIFAR.mlmodel; sourceTree = "<group>"; };
 		45E9820720D18A07003B6C7B /* ChatTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatTableViewController.swift; sourceTree = "<group>"; };
 		45F10CA92110774E0032CB1C /* BaseViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseViewController.swift; sourceTree = "<group>"; };
 		45F4524620CEFF880051294A /* Stitch-Demo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Stitch-Demo.app"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -105,6 +107,7 @@
 		45F4524820CEFF880051294A /* Stitch-Demo */ = {
 			isa = PBXGroup;
 			children = (
+				4594F20F2124AF3D00611D95 /* CIFAR.mlmodel */,
 				45128DF920D2C46000E32222 /* Extensions */,
 				45F6643A20D12756002D8F6E /* Nexmo.swift */,
 				45F4524920CEFF880051294A /* AppDelegate.swift */,
@@ -218,6 +221,7 @@
 			inputPaths = (
 				"${SRCROOT}/Pods/Target Support Files/Pods-Stitch-Demo/Pods-Stitch-Demo-frameworks.sh",
 				"${BUILT_PRODUCTS_DIR}/Alamofire/Alamofire.framework",
+				"${BUILT_PRODUCTS_DIR}/CoreMLHelpers/CoreMLHelpers.framework",
 				"${BUILT_PRODUCTS_DIR}/MBProgressHUD/MBProgressHUD.framework",
 				"${PODS_ROOT}/Nexmo-Stitch/Carthage/Build/iOS/Stitch.framework",
 				"${PODS_ROOT}/Nexmo-Stitch/Carthage/Build/iOS/Stitch.framework.dSYM",
@@ -231,6 +235,7 @@
 			name = "[CP] Embed Pods Frameworks";
 			outputPaths = (
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Alamofire.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/CoreMLHelpers.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/MBProgressHUD.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Stitch.framework",
 				"${DWARF_DSYM_FOLDER_PATH}/Stitch.framework.dSYM",
@@ -275,6 +280,7 @@
 				45F4524C20CEFF880051294A /* InitalViewController.swift in Sources */,
 				45F6643B20D12756002D8F6E /* Nexmo.swift in Sources */,
 				4543877820F398DF00E09FB2 /* ProgressHUD+extensions.swift in Sources */,
+				4594F2102124AF3D00611D95 /* CIFAR.mlmodel in Sources */,
 				451EB24620D92E4C0022F32A /* UIViewController+Extensions.swift in Sources */,
 				45F10CAA2110774E0032CB1C /* BaseViewController.swift in Sources */,
 				450DB76320DBDD6D00BBCCC5 /* Storyboard.swift in Sources */,

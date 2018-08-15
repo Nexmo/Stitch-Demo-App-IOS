@@ -8,10 +8,15 @@
 
 import UIKit
 import Stitch
+import CoreML
+import CoreMLHelpers
+
 
 class ChatTableViewController: UIViewController, UITextFieldDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate {
 
-    
+    //load coreML model once
+    let model = CIFAR()
+
     let client: ConversationClient = {
         return ConversationClient.instance
     }()
@@ -249,11 +254,23 @@ extension ChatTableViewController: UITableViewDelegate, UITableViewDataSource {
         switch event {
         case is ImageEvent:
             let imageEvent = (event as! ImageEvent)
-            guard let imagePath = imageEvent.path(of: IPS.ImageType.thumbnail) else {
+            guard let imagePath = imageEvent.path(of: IPS.ImageType.thumbnail), let image = UIImage(contentsOfFile: imagePath) else {
                 break
             }
-            cell.imageView?.image = UIImage(contentsOfFile: imagePath)
-            cell.textLabel?.text = (imageEvent.from?.name)! + " uploaded a photo"
+            
+            cell.imageView?.image = image
+
+            if let pixelBuffer = image.pixelBuffer(width: 32, height: 32) {
+                let input = CIFARInput(image: pixelBuffer)
+                if let output = try? model.prediction(input: input)  {
+                    cell.textLabel?.text = (imageEvent.from?.name)! + " uploaded a photo of a \(output.classLabel)"
+                }
+                else {
+                    cell.textLabel?.text = (imageEvent.from?.name)! + " uploaded a photo"
+                }
+            }
+            
+            
             cell.detailTextLabel?.text = (event?.createDate.description)!
             break;
         case is TextEvent:

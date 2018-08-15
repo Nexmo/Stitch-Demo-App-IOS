@@ -1,5 +1,6 @@
 PODS:
   - Alamofire (4.7.2)
+  - CoreMLHelpers (0.1.0)
   - MBProgressHUD (1.1.0)
   - Nexmo-Stitch (1.8.0):
     - Alamofire (~> 4.0)
@@ -16,6 +17,7 @@ PODS:
   - SwiftyJSON (4.1.0)
 
 DEPENDENCIES:
+  - CoreMLHelpers (from `https://github.com/hollance/CoreMLHelpers.git`)
   - MBProgressHUD (~> 1.1.0)
   - Nexmo-Stitch
   - SwiftyJSON (~> 4.0)
@@ -32,8 +34,18 @@ SPEC REPOS:
     - Starscream
     - SwiftyJSON
 
+EXTERNAL SOURCES:
+  CoreMLHelpers:
+    :git: https://github.com/hollance/CoreMLHelpers.git
+
+CHECKOUT OPTIONS:
+  CoreMLHelpers:
+    :commit: 996af54f8b89cd14978fb6a38cf45323657be4ee
+    :git: https://github.com/hollance/CoreMLHelpers.git
+
 SPEC CHECKSUMS:
   Alamofire: e4fa87002c137ba2d8d634d2c51fabcda0d5c223
+  CoreMLHelpers: 25cc181995f16ab9168e234b0d236686cb2cdbe5
   MBProgressHUD: e7baa36a220447d8aeb12769bf0585582f3866d9
   Nexmo-Stitch: ecb45e5573ce0ada64c349e91850bccbffc7b7ed
   NexmoGRDB.swift: a3f76f83f87c0836f3b2cdb375aa7e9e9f8bce3a
@@ -43,6 +55,6 @@ SPEC CHECKSUMS:
   Starscream: faf918b2f2eff7d5dd21180646bf015a669673bd
   SwiftyJSON: c29297daf073d2aa016295d5809cdd68045c39b3
 
-PODFILE CHECKSUM: 034b675ca42d5389568fd983c3ad475a07ca5332
+PODFILE CHECKSUM: ca719b2c88c54bb0145159871e7246674c48a4be
 
 COCOAPODS: 1.5.3
