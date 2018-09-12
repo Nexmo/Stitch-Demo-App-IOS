@@ -1,0 +1,6 @@
+framework module StitchObjC {
+  umbrella header "StitchObjC.h"
+
+  export *
+  module * { export * }
+}

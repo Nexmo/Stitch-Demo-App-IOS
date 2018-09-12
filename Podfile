@@ -1,11 +1,19 @@
-platform :ios, '10.0'
-inhibit_all_warnings!
+source 'git@github.com:CocoaPods/Specs.git'
+source 'git@github.com:Vonage/NexmoCocoaPodSpecs.git'
+
 
 target 'Stitch-Demo' do
-  use_frameworks!
+	use_frameworks!
+    pod 'Nexmo-Stitch'
+	pod 'StitchObjC', :git => 'https://github.com/Vonage/stitch_iOS.git', :branch => 'develop'
+	pod 'SwiftyJSON', '~> 4.0'
+	pod 'MBProgressHUD', '~> 1.1.0'
+end
 
-  # pod for Nexmo Stitch iOS SDK
-  pod 'Nexmo-Stitch'
-pod 'SwiftyJSON', '~> 4.0'
-pod 'MBProgressHUD', '~> 1.1.0'
+post_install do |installer|
+  installer.pods_project.targets.each do |target|
+    target.build_configurations.each do |config|
+      config.build_settings['ENABLE_BITCODE'] = 'NO'
+    end
+  end
 end
