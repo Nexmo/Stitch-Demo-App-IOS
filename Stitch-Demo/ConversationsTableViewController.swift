@@ -22,11 +22,11 @@ class ConversationsTableViewController: UITableViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        self.navigationItem.title = "Conversations"
+        navigationItem.title = "Conversations"
 
         let addButton = UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(createConversation(_:)))
         let callButton = UIBarButtonItem(title: "Call", style: .plain, target: self, action: #selector(makePhoneCall(_:)))
-        self.navigationItem.rightBarButtonItems = [addButton, callButton]
+        navigationItem.rightBarButtonItems = [addButton, callButton]
         
         client.conversation.conversations.asObservable.subscribe { [weak self] change in
             self?.reloadData()
@@ -47,13 +47,13 @@ class ConversationsTableViewController: UITableViewController {
                 preferredStyle: .alert
             )
             
-            calling.addAction(UIAlertAction(title: "Answer", style: .default, handler: { [weak self] _ in
+            calling.addAction(UIAlertAction(title: "Answer", style: .default) { _ in
                 print("DEMO - Will answer call")
                 
                 call.answer(onSuccess: {
-                    AudioController.shared.requestAudioPermission { (success) in
+                    AudioController.shared.requestAudioPermission { [weak self] (success) in
                         if success {
-                            let storyboard = UIStoryboard(name: UIStoryboard.Storyboard.main.filename, bundle: nil)
+                            let storyboard = UIStoryboard(storyboard: .main)
                             let vc = storyboard.instantiateViewController(withIdentifier: "CallViewController") as! CallViewController
                             vc.call = call
                             
@@ -64,16 +64,16 @@ class ConversationsTableViewController: UITableViewController {
                 }, onError: { [weak self] error in
                     self?.presentAlert(title: "Failed to answer call", message: error.localizedDescription)
                 })
-            }))
+            })
             
-            calling.addAction(UIAlertAction(title: "Reject", style: .destructive, handler: { _ in
+            calling.addAction(UIAlertAction(title: "Reject", style: .destructive) { _ in
                 call.reject()
-            }))
+            })
             
             self?.present(calling, animated: true)
-    }
+        }
         
-        self.reloadData()
+        reloadData()
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -88,25 +88,19 @@ class ConversationsTableViewController: UITableViewController {
         sortedConversations = client.conversation.conversations.sorted(by: { $0.creationDate.compare($1.creationDate) == .orderedDescending })
         tableView.reloadData()
     }
-    
-    
 
-    override func didReceiveMemoryWarning() {
-        super.didReceiveMemoryWarning()
-    }
-    
     @objc func createConversation(_ sender:UIBarButtonItem) {
         let alert = UIAlertController(title: "New Conversation", message: nil, preferredStyle: .alert)
         
-        alert.addAction(UIAlertAction(title: "Done", style: .default, handler: { (action) in
+        alert.addAction(UIAlertAction(title: "Done", style: .default) { [weak self] _ in
             guard let converstationTitle = alert.textFields?.first?.text else {
                 return
             }
             
             if !converstationTitle.isEmpty {
-                self.newConversation(converstationTitle)
+                self?.newConversation(converstationTitle)
             }
-        }))
+        })
         alert.addTextField { (textField) in
             textField.placeholder = "Enter name for conversation"
         }
@@ -120,10 +114,10 @@ class ConversationsTableViewController: UITableViewController {
         alert.addAction(UIAlertAction(title: "Done", style: .default, handler: { (action) in
             let phoneNumber = "18457297292"//alert.textFields![0] as UITextField
             
-            AudioController.shared.requestAudioPermission { (success) in
+            AudioController.shared.requestAudioPermission { [weak self] (success) in
                 if success {
-                    self.client.media.callPhone(phoneNumber, onSuccess: { [weak self] result in
-                        let storyboard = UIStoryboard(name: UIStoryboard.Storyboard.main.filename, bundle: nil)
+                    self?.client.media.callPhone(phoneNumber, onSuccess: { [weak self] result in
+                        let storyboard = UIStoryboard(storyboard: .main)
                         let vc = storyboard.instantiateViewController(withIdentifier: "CallViewController") as! CallViewController
                         vc.call = result.call
                         
@@ -142,9 +136,10 @@ class ConversationsTableViewController: UITableViewController {
     }
 
     func newConversation(_ text:String) {
-        self.client.conversation.new(with: text, shouldJoin: true, { (conversation) in
+        client.conversation.new(with: text, shouldJoin: true, { (conversation) in
             print("success")
-            DispatchQueue.main.async {
+            DispatchQueue.main.async { [weak self] in
+                guard let self = self else { return }
                 self.presentAlert(title: "Conversation Created")
                 self.sortedConversations = self.client.conversation.conversations.sorted(by: { $0.creationDate.compare($1.creationDate) == .orderedDescending })
                 self.tableView.reloadData()
@@ -163,11 +158,11 @@ class ConversationsTableViewController: UITableViewController {
 
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         guard let _ = sortedConversations else {
-            self.tableView.setEmptyMessage("No Conversations")
+            tableView.setEmptyMessage("No Conversations")
             return 0
         }
         
-        self.tableView.restore()
+        tableView.restore()
         return sortedConversations!.count
     }
 
