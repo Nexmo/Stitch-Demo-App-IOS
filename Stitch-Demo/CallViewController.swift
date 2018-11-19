@@ -30,9 +30,9 @@ class CallViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        self.navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .done, target: self, action:  #selector(close(_:)))
-        self.stateLabel?.text = ""
-        self.memberStatus?.text = ""
+        navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .done, target: self, action:  #selector(close(_:)))
+        stateLabel?.text = ""
+        memberStatus?.text = ""
     }
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
@@ -42,7 +42,7 @@ class CallViewController: UIViewController {
         super.viewWillDisappear(animated)
         
         print("auto hangup")
-        self.hangup()
+        hangup()
         call?.memberState.unsubscribe()
         call?.state.unsubscribe()
     }
@@ -56,9 +56,9 @@ class CallViewController: UIViewController {
             return
         }
         let toUsers = call.to.map { $0.user.name }
-        self.stateLabel?.text = "Call from \(call.from?.user.name ?? "Unknown" ) to \(toUsers)"
+        stateLabel?.text = "Call from \(call.from?.user.name ?? "Unknown" ) to \(toUsers)"
 
-        call.state.subscribe { state in
+        call.state.subscribe { [weak self] state in
             var currentState: String {
                 switch state {
                 case .started: return "started"
@@ -73,7 +73,7 @@ class CallViewController: UIViewController {
                 case .machine: return "detected answering machine"
                 }
             }
-            self.stateLabel?.text = "Call \(currentState)"
+            self?.stateLabel?.text = "Call \(currentState)"
         }
         
         call.memberState.subscribe { [weak self] event in
