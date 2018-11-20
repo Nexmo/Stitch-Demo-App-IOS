@@ -7,16 +7,15 @@
 //
 
 import UIKit
-import Stitch
-
+import StitchClient
 class ChatTableViewController: UIViewController, UITextFieldDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate {
 
     
-    let client: ConversationClient = {
-        return ConversationClient.instance
+    let client: NXMStitchClient = {
+        return NXMStitchClient.init()
     }()
 
-    var conversation: Conversation?
+    var conversation: NXMConversation?
     let imagePicker = UIImagePickerController()
     
     @IBOutlet weak var containerView: UIView!
@@ -51,22 +50,22 @@ class ChatTableViewController: UIViewController, UITextFieldDelegate, UIImagePic
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         
-        // listen for messages
-        conversation!.events.newEventReceived.subscribe(onSuccess: { [weak self] event in
-            print("newEventReceived \(event)")
-            self?.tableView.reloadData()
-        })
-        
-        // listen for typing
-        conversation?.members.forEach { member in
-            member.typing
-                .subscribe(onSuccess: { [weak self] (typing) in
-                    print("isTyping",typing)
-                    self?.handleTypingChangedEvent(member: member, isTyping: typing)
-                }, onError: { (error) in
-                    print("error")
-                })
-        }
+//        // listen for messages
+//        conversation!.events.newEventReceived.subscribe(onSuccess: { [weak self] event in
+//            print("newEventReceived \(event)")
+//            self?.tableView.reloadData()
+//        })
+//        
+//        // listen for typing
+//        conversation?.members.forEach { member in
+//            member.typing
+//                .subscribe(onSuccess: { [weak self] (typing) in
+//                    print("isTyping",typing)
+//                    self?.handleTypingChangedEvent(member: member, isTyping: typing)
+//                }, onError: { (error) in
+//                    print("error")
+//                })
+//        }
         
     }
     override func viewWillDisappear(_ animated: Bool) {
@@ -87,23 +86,18 @@ class ChatTableViewController: UIViewController, UITextFieldDelegate, UIImagePic
     }
     
     @IBAction func sendText(_ sender: Any) {
-        handleSend()
     }
+    
     func setupKeyboardObservers() {
-        NotificationCenter.default.addObserver(self, selector: #selector(handleKeyboardWillShow), name: NSNotification.Name.UIKeyboardWillShow, object: nil)
-        
-        NotificationCenter.default.addObserver(self, selector: #selector(handleKeyboardWillHide), name: NSNotification.Name.UIKeyboardWillHide, object: nil)
+       
     }
     
     //MARK: TextField Delegate
     func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
-        conversation?.startTyping()
         return true
     }
     
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
-        handleSend()
-        conversation?.stopTyping()
         return true
     }
     
@@ -113,36 +107,36 @@ class ChatTableViewController: UIViewController, UITextFieldDelegate, UIImagePic
         guard let image = info[UIImagePickerControllerOriginalImage] as? UIImage, let data = UIImageJPEGRepresentation(image, 1.0) else {
             return
         }
-        do {
-            // send method
-            try conversation?.send(data)
-            tableView.reloadData()
-            inputTextField.text = nil
-            view.endEditing(true)
-            
-        } catch let error {
-            print(error)
-        }
+        
+        // send method
+        conversation?.sendAttachment(of: .image, withName: "My Image", data: data, completion: { [weak self] (error) in
+            guard let _ = error else {
+                return
+            }
+            self?.tableView.reloadData()
+            self?.inputTextField.text = nil
+            self?.view.endEditing(true)
+        })
         
         dismiss(animated: true, completion: nil)
     }
 
     
-    @objc func handleSend() {
-        do {
-            // send method
-            try conversation?.send(inputTextField.text!)
-            
-        } catch let error {
-            print(error)
-        }
-        tableView.reloadData()
-        inputTextField.text = nil
-        view.endEditing(true)
+    func handleSend() {
+       
+        // send metho
+        conversation?.sendText(inputTextField.text!, completion: {[weak self] (error) in
+            guard let _ = error else {
+                return
+            }
+            self?.tableView.reloadData()
+            self?.inputTextField.text = nil
+            self?.view.endEditing(true)
+        })
 
     }
     
-    @objc func handleKeyboardWillShow(_ notification: Notification) {
+    func handleKeyboardWillShow(_ notification: Notification) {
         let keyboardFrame = (notification.userInfo?[UIKeyboardFrameEndUserInfoKey] as AnyObject).cgRectValue
         let keyboardDuration = (notification.userInfo?[UIKeyboardAnimationDurationUserInfoKey] as AnyObject).doubleValue
         
@@ -151,7 +145,7 @@ class ChatTableViewController: UIViewController, UITextFieldDelegate, UIImagePic
         UIView.animate(withDuration: keyboardDuration!, animations: view.layoutIfNeeded)
     }
     
-    @objc func handleKeyboardWillHide(_ notification: Notification) {
+    func handleKeyboardWillHide(_ notification: Notification) {
         let keyboardDuration = (notification.userInfo?[UIKeyboardAnimationDurationUserInfoKey] as AnyObject).doubleValue
         
         bottomLayoutContraint?.constant = 0
@@ -160,22 +154,22 @@ class ChatTableViewController: UIViewController, UITextFieldDelegate, UIImagePic
     }
     
     
-    private func handleTypingChangedEvent(member: Member, isTyping: Bool) {
+    private func handleTypingChangedEvent(member: NXMMember, isTyping: Bool) {
         /* make sure it is not this user typing */
-        if !member.user.isMe {
-            let name = member.user.name
-            
-            if isTyping {
-                whoIsTyping.insert(name)
-            } else {
-                whoIsTyping.remove(name)
-            }
-            
-            refreshTypingIndicatorLabel()
-        }
+//        if !member.user.isMe {
+//            let name = member.user.name
+//
+//            if isTyping {
+//                whoIsTyping.insert(name)
+//            } else {
+//                whoIsTyping.remove(name)
+//            }
+//
+//            refreshTypingIndicatorLabel()
+//        }
     }
     
-    private func refreshTypingIndicatorLabel(){
+    func refreshTypingIndicatorLabel(){
         if !whoIsTyping.isEmpty {
             var caption = whoIsTyping.joined(separator: ", ")
             
@@ -205,13 +199,13 @@ class ChatTableViewController: UIViewController, UITextFieldDelegate, UIImagePic
             let destinationNavigationController = segue.destination as! ConversationInfoViewController
             destinationNavigationController.conversation = conversation
         } else if segue.identifier == "photoViewer" {
-            let row = (sender as! IndexPath).row
-            guard let imageEvent = conversation?.events[row] as? ImageEvent, let imagePath = imageEvent.path(of: IPS.ImageType.original) else {
-                return
-            }
-            let destinationNavigationController = segue.destination as! UINavigationController
-            let targetController = destinationNavigationController.topViewController as! PhotoViewController
-            targetController.image = UIImage(contentsOfFile: imagePath)
+//            let row = (sender as! IndexPath).row
+//            guard let imageEvent = conversation?.events[row] as? ImageEvent, let imagePath = imageEvent.path(of: IPS.ImageType.original) else {
+//                return
+//            }
+//            let destinationNavigationController = segue.destination as! UINavigationController
+//            let targetController = destinationNavigationController.topViewController as! PhotoViewController
+//            targetController.image = UIImage(contentsOfFile: imagePath)
         }
     }
 
@@ -230,7 +224,7 @@ extension ChatTableViewController: UITableViewDelegate, UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return conversation!.events.count
+        return 0;//conversation!.events.count
     }
     
     
@@ -240,65 +234,65 @@ extension ChatTableViewController: UITableViewDelegate, UITableViewDataSource {
         cell.imageView?.image = nil
         cell.accessoryType = UITableViewCellAccessoryType.none
 
-        let event = conversation?.events[indexPath.row]
-
-        switch event {
-        case is ImageEvent:
-            let imageEvent = (event as! ImageEvent)
-            guard let imagePath = imageEvent.path(of: IPS.ImageType.thumbnail) else {
-                break
-            }
-            cell.imageView?.image = UIImage(contentsOfFile: imagePath)
-            cell.textLabel?.text = (imageEvent.from?.name)! + " uploaded a photo"
-            cell.detailTextLabel?.text = (event?.createDate.description)!
-            break
-        case is TextEvent:
-            let textEvent = (event as! TextEvent)
-            //TODO: Is this how we get the seen receipt?
-            let receipt = textEvent.receiptForMember(textEvent.fromMember!)
-            if (receipt != nil) {
-                if (receipt?.state == ReceiptRecord.State.seen) {
-                    cell.accessoryType = UITableViewCellAccessoryType.checkmark
-                }
-            }
-            
-            cell.textLabel?.text = textEvent.text
-            cell.detailTextLabel?.text = (textEvent.from?.name)! + " " + (event?.createDate.description)!
-            break
-        case is MediaEvent:
-            let mediaEvent = (event as! MediaEvent)
-            
-            cell.textLabel?.text =  (mediaEvent.from?.name)! + " " + (mediaEvent.enabled ? "enabled audio" : "disabled audio")
-            cell.detailTextLabel?.text = mediaEvent.createDate.description
-            break
-        case is MemberJoinedEvent:
-            let memberJoinedEvent = (event as! MemberJoinedEvent)
-            cell.textLabel?.text =  (memberJoinedEvent.from?.name)! + " joined"
-            cell.detailTextLabel?.text = memberJoinedEvent.createDate.description
-            break
-        case is MemberInvitedEvent:
-            let memberInvited = (event as! MemberInvitedEvent)
-            cell.textLabel?.text =  (memberInvited.from?.name)! + " invited"
-            cell.detailTextLabel?.text = memberInvited.createDate.description
-            break
-        case is MemberLeftEvent:
-            let memberLeft = (event as! MemberLeftEvent)
-            cell.textLabel?.text =  (memberLeft.from?.name)! + " left"
-            cell.detailTextLabel?.text = memberLeft.createDate.description
-            break
-        default:
-            cell.textLabel?.text = ""
-        }
+//        let event = conversation?.events[indexPath.row]
+//
+//        switch event {
+//        case is ImageEvent:
+//            let imageEvent = (event as! ImageEvent)
+//            guard let imagePath = imageEvent.path(of: IPS.ImageType.thumbnail) else {
+//                break
+//            }
+//            cell.imageView?.image = UIImage(contentsOfFile: imagePath)
+//            cell.textLabel?.text = (imageEvent.from?.name)! + " uploaded a photo"
+//            cell.detailTextLabel?.text = (event?.createDate.description)!
+//            break
+//        case is TextEvent:
+//            let textEvent = (event as! TextEvent)
+//            //TODO: Is this how we get the seen receipt?
+//            let receipt = textEvent.receiptForMember(textEvent.fromMember!)
+//            if (receipt != nil) {
+//                if (receipt?.state == ReceiptRecord.State.seen) {
+//                    cell.accessoryType = UITableViewCellAccessoryType.checkmark
+//                }
+//            }
+//            
+//            cell.textLabel?.text = textEvent.text
+//            cell.detailTextLabel?.text = (textEvent.from?.name)! + " " + (event?.createDate.description)!
+//            break
+//        case is MediaEvent:
+//            let mediaEvent = (event as! MediaEvent)
+//            
+//            cell.textLabel?.text =  (mediaEvent.from?.name)! + " " + (mediaEvent.enabled ? "enabled audio" : "disabled audio")
+//            cell.detailTextLabel?.text = mediaEvent.createDate.description
+//            break
+//        case is MemberJoinedEvent:
+//            let memberJoinedEvent = (event as! MemberJoinedEvent)
+//            cell.textLabel?.text =  (memberJoinedEvent.from?.name)! + " joined"
+//            cell.detailTextLabel?.text = memberJoinedEvent.createDate.description
+//            break
+//        case is MemberInvitedEvent:
+//            let memberInvited = (event as! MemberInvitedEvent)
+//            cell.textLabel?.text =  (memberInvited.from?.name)! + " invited"
+//            cell.detailTextLabel?.text = memberInvited.createDate.description
+//            break
+//        case is MemberLeftEvent:
+//            let memberLeft = (event as! MemberLeftEvent)
+//            cell.textLabel?.text =  (memberLeft.from?.name)! + " left"
+//            cell.detailTextLabel?.text = memberLeft.createDate.description
+//            break
+//        default:
+//            cell.textLabel?.text = ""
+//        }
 
         return cell
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        let event = conversation?.events[indexPath.row]
-        tableView.deselectRow(at: indexPath, animated: false)
-        if event is ImageEvent {
-            performSegue(withIdentifier: "photoViewer", sender: indexPath)
-        }
+//        let event = conversation?.events[indexPath.row]
+//        tableView.deselectRow(at: indexPath, animated: false)
+//        if event is ImageEvent {
+//            performSegue(withIdentifier: "photoViewer", sender: indexPath)
+//        }
     }
 }
 

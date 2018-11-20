@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		34FBB1287C49B2C211E3D418 /* Pods_Stitch_Demo.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 253B1D51BD49A94421A9649F /* Pods_Stitch_Demo.framework */; };
 		450DB75F20DBCBBD00BBCCC5 /* CallViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 450DB75E20DBCBBD00BBCCC5 /* CallViewController.swift */; };
 		450DB76120DBCC6800BBCCC5 /* AudioController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 450DB76020DBCC6800BBCCC5 /* AudioController.swift */; };
 		450DB76320DBDD6D00BBCCC5 /* Storyboard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 450DB76220DBDD6D00BBCCC5 /* Storyboard.swift */; };
@@ -24,11 +25,10 @@
 		45F4525120CEFF8A0051294A /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 45F4525020CEFF8A0051294A /* Assets.xcassets */; };
 		45F4525420CEFF8A0051294A /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 45F4525220CEFF8A0051294A /* LaunchScreen.storyboard */; };
 		45F6643B20D12756002D8F6E /* Nexmo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45F6643A20D12756002D8F6E /* Nexmo.swift */; };
-		E54617E7B6278DFA36047B6E /* Pods_Stitch_Demo.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BBC2D0A0FDE845E50CB5E408 /* Pods_Stitch_Demo.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		0139DBADC6A57254B282D395 /* Pods-Stitch-Demo.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Stitch-Demo.release.xcconfig"; path = "Pods/Target Support Files/Pods-Stitch-Demo/Pods-Stitch-Demo.release.xcconfig"; sourceTree = "<group>"; };
+		253B1D51BD49A94421A9649F /* Pods_Stitch_Demo.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Stitch_Demo.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		450DB75E20DBCBBD00BBCCC5 /* CallViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CallViewController.swift; sourceTree = "<group>"; };
 		450DB76020DBCC6800BBCCC5 /* AudioController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioController.swift; sourceTree = "<group>"; };
 		450DB76220DBDD6D00BBCCC5 /* Storyboard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Storyboard.swift; sourceTree = "<group>"; };
@@ -48,8 +48,9 @@
 		45F4525320CEFF8A0051294A /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		45F4525520CEFF8A0051294A /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		45F6643A20D12756002D8F6E /* Nexmo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Nexmo.swift; sourceTree = "<group>"; };
-		BBC2D0A0FDE845E50CB5E408 /* Pods_Stitch_Demo.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Stitch_Demo.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		D5CF9A012860EB8F110794C4 /* Pods-Stitch-Demo.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Stitch-Demo.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Stitch-Demo/Pods-Stitch-Demo.debug.xcconfig"; sourceTree = "<group>"; };
+		56751D2221A31D0C004C4F13 /* Stitch-Demo-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Stitch-Demo-Bridging-Header.h"; sourceTree = "<group>"; };
+		6F463F19BC92C501B9D31ED9 /* Pods-Stitch-Demo.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Stitch-Demo.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Stitch-Demo/Pods-Stitch-Demo.debug.xcconfig"; sourceTree = "<group>"; };
+		96D04C1DA33D6B6489309EC2 /* Pods-Stitch-Demo.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Stitch-Demo.release.xcconfig"; path = "Pods/Target Support Files/Pods-Stitch-Demo/Pods-Stitch-Demo.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -57,22 +58,13 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				E54617E7B6278DFA36047B6E /* Pods_Stitch_Demo.framework in Frameworks */,
+				34FBB1287C49B2C211E3D418 /* Pods_Stitch_Demo.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		0CDA5E6FFE2CC5C37DA197FC /* Pods */ = {
-			isa = PBXGroup;
-			children = (
-				D5CF9A012860EB8F110794C4 /* Pods-Stitch-Demo.debug.xcconfig */,
-				0139DBADC6A57254B282D395 /* Pods-Stitch-Demo.release.xcconfig */,
-			);
-			name = Pods;
-			sourceTree = "<group>";
-		};
 		45128DF920D2C46000E32222 /* Extensions */ = {
 			isa = PBXGroup;
 			children = (
@@ -89,8 +81,8 @@
 			children = (
 				45F4524820CEFF880051294A /* Stitch-Demo */,
 				45F4524720CEFF880051294A /* Products */,
-				0CDA5E6FFE2CC5C37DA197FC /* Pods */,
-				873ECD6C37B25FCF769F7DDF /* Frameworks */,
+				F0803F7AC151F0C2F56A3395 /* Pods */,
+				DB32D208C7BE032A7F4F6419 /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -120,16 +112,26 @@
 				450DB75E20DBCBBD00BBCCC5 /* CallViewController.swift */,
 				450DB76020DBCC6800BBCCC5 /* AudioController.swift */,
 				45F10CA92110774E0032CB1C /* BaseViewController.swift */,
+				56751D2221A31D0C004C4F13 /* Stitch-Demo-Bridging-Header.h */,
 			);
 			path = "Stitch-Demo";
 			sourceTree = "<group>";
 		};
-		873ECD6C37B25FCF769F7DDF /* Frameworks */ = {
+		DB32D208C7BE032A7F4F6419 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				BBC2D0A0FDE845E50CB5E408 /* Pods_Stitch_Demo.framework */,
+				253B1D51BD49A94421A9649F /* Pods_Stitch_Demo.framework */,
 			);
 			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		F0803F7AC151F0C2F56A3395 /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				6F463F19BC92C501B9D31ED9 /* Pods-Stitch-Demo.debug.xcconfig */,
+				96D04C1DA33D6B6489309EC2 /* Pods-Stitch-Demo.release.xcconfig */,
+			);
+			name = Pods;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -139,11 +141,12 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 45F4525820CEFF8A0051294A /* Build configuration list for PBXNativeTarget "Stitch-Demo" */;
 			buildPhases = (
-				35B99D8D9C3E48C0C782F677 /* [CP] Check Pods Manifest.lock */,
+				8187F0FF8E4485CA9C036F0D /* [CP] Check Pods Manifest.lock */,
 				45F4524220CEFF880051294A /* Sources */,
 				45F4524320CEFF880051294A /* Frameworks */,
 				45F4524420CEFF880051294A /* Resources */,
-				272D21B0964E02F7E72AEBEC /* [CP] Embed Pods Frameworks */,
+				DE2FB4875649103EEEBECBE0 /* [CP] Embed Pods Frameworks */,
+				12553595AF1BA39683D0176B /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -166,6 +169,7 @@
 				TargetAttributes = {
 					45F4524520CEFF880051294A = {
 						CreatedOnToolsVersion = 9.4;
+						LastSwiftMigration = 1010;
 						ProvisioningStyle = Automatic;
 						SystemCapabilities = {
 							com.apple.BackgroundModes = {
@@ -210,49 +214,22 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
-		272D21B0964E02F7E72AEBEC /* [CP] Embed Pods Frameworks */ = {
+		12553595AF1BA39683D0176B /* [CP] Copy Pods Resources */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 			);
 			inputPaths = (
-				"${SRCROOT}/Pods/Target Support Files/Pods-Stitch-Demo/Pods-Stitch-Demo-frameworks.sh",
-				"${BUILT_PRODUCTS_DIR}/Alamofire/Alamofire.framework",
-				"${BUILT_PRODUCTS_DIR}/MBProgressHUD/MBProgressHUD.framework",
-				"${PODS_ROOT}/MiniRTC_Release/iOSFramework.framework",
-				"${PODS_ROOT}/Nexmo-Stitch/Carthage/Build/iOS/Stitch.framework",
-				"${PODS_ROOT}/Nexmo-Stitch/Carthage/Build/iOS/Stitch.framework.dSYM",
-				"${BUILT_PRODUCTS_DIR}/NexmoGRDB.swift/GRDB.framework",
-				"${PODS_ROOT}/NexmoWebRTC/WebRTC.framework",
-				"${BUILT_PRODUCTS_DIR}/RxSwift/RxSwift.framework",
-				"${BUILT_PRODUCTS_DIR}/Socket.IO-Client-Swift/SocketIO.framework",
-				"${BUILT_PRODUCTS_DIR}/Starscream/Starscream.framework",
-				"${BUILT_PRODUCTS_DIR}/StitchObjC/StitchObjC.framework",
-				"${BUILT_PRODUCTS_DIR}/SwiftyJSON/SwiftyJSON.framework",
-				"${BUILT_PRODUCTS_DIR}/VPSocketIO/VPSocketIO.framework",
 			);
-			name = "[CP] Embed Pods Frameworks";
+			name = "[CP] Copy Pods Resources";
 			outputPaths = (
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Alamofire.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/MBProgressHUD.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/iOSFramework.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Stitch.framework",
-				"${DWARF_DSYM_FOLDER_PATH}/Stitch.framework.dSYM",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/GRDB.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/WebRTC.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/RxSwift.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/SocketIO.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Starscream.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/StitchObjC.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/SwiftyJSON.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/VPSocketIO.framework",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-Stitch-Demo/Pods-Stitch-Demo-frameworks.sh\"\n";
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-Stitch-Demo/Pods-Stitch-Demo-resources.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
-		35B99D8D9C3E48C0C782F677 /* [CP] Check Pods Manifest.lock */ = {
+		8187F0FF8E4485CA9C036F0D /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -268,6 +245,32 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+		DE2FB4875649103EEEBECBE0 /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+				"${SRCROOT}/Pods/Target Support Files/Pods-Stitch-Demo/Pods-Stitch-Demo-frameworks.sh",
+				"${BUILT_PRODUCTS_DIR}/MBProgressHUD/MBProgressHUD.framework",
+				"${PODS_ROOT}/MiniRTC_Release/iOSFramework.framework",
+				"${BUILT_PRODUCTS_DIR}/StitchClient/StitchClient.framework",
+				"${BUILT_PRODUCTS_DIR}/StitchCore/StitchCore.framework",
+				"${BUILT_PRODUCTS_DIR}/SwiftyJSON/SwiftyJSON.framework",
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputPaths = (
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/MBProgressHUD.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/iOSFramework.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/StitchClient.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/StitchCore.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/SwiftyJSON.framework",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-Stitch-Demo/Pods-Stitch-Demo-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 /* End PBXShellScriptBuildPhase section */
@@ -431,9 +434,10 @@
 		};
 		45F4525920CEFF8A0051294A /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = D5CF9A012860EB8F110794C4 /* Pods-Stitch-Demo.debug.xcconfig */;
+			baseConfigurationReference = 6F463F19BC92C501B9D31ED9 /* Pods-Stitch-Demo.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = E37FZSUGQP;
 				ENABLE_BITCODE = NO;
@@ -442,6 +446,8 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "com.vonage.garage.Stitch-Demo";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_OBJC_BRIDGING_HEADER = "Stitch-Demo/Stitch-Demo-Bridging-Header.h";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 4.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -449,9 +455,10 @@
 		};
 		45F4525A20CEFF8A0051294A /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 0139DBADC6A57254B282D395 /* Pods-Stitch-Demo.release.xcconfig */;
+			baseConfigurationReference = 96D04C1DA33D6B6489309EC2 /* Pods-Stitch-Demo.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = E37FZSUGQP;
 				ENABLE_BITCODE = NO;
@@ -460,6 +467,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "com.vonage.garage.Stitch-Demo";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_OBJC_BRIDGING_HEADER = "Stitch-Demo/Stitch-Demo-Bridging-Header.h";
 				SWIFT_VERSION = 4.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};

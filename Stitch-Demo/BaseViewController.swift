@@ -7,35 +7,24 @@
 //
 
 import UIKit
-import Stitch
-
+import StitchClient
 //TODO: think about how to do this better.
 //Should be one base vc for all viewcontrollers
 
 class BaseViewController: UIViewController {
 
-    let client: ConversationClient = {
-        let config = Stitch.Configuration.init(with: .info,
-                                               autoReconnect: false,
-                                               autoDownload: false,
-                                               clearAllData: true,
-                                               pushNotifications: true)
-        ConversationClient.configuration = config
-        return ConversationClient.instance
+    let client: NXMStitchClient = {
+        
+        return NXMStitchClient.init()
     }()
 
 }
 
 class BaseTableViewController: UITableViewController {
     
-    let client: ConversationClient = {
-        let config = Stitch.Configuration.init(with: .info,
-                                               autoReconnect: false,
-                                               autoDownload: false,
-                                               clearAllData: true,
-                                               pushNotifications: true)
-        ConversationClient.configuration = config
-        return ConversationClient.instance
+    let client: NXMStitchClient = {
+       
+        return NXMStitchClient.init()   
     }()
     
 }

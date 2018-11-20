@@ -7,7 +7,7 @@
 //
 
 import UIKit
-import Stitch
+import StitchClient
 import SwiftyJSON
 
 class InitalViewController: BaseViewController {
@@ -36,22 +36,22 @@ class InitalViewController: BaseViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        client.account.state.subscribe(onSuccess: { (account_state) in
-            DispatchQueue.main.async { [weak self] in
-                guard let self = self else { return }
-                switch account_state {
-                case .loggedIn(let session):
-                    self.logoutButton.isEnabled = true
-                    self.chatButton.isEnabled =  true
-                    self.infoLabel.text = "User " + (session.name) + " Logged in"
-                case .loggedOut:
-                    self.infoLabel.text = self.introText
-                    self.logoutButton.isEnabled = true
-                    self.chatButton.isEnabled =  false
-                }
-            }
-            
-        }) { (_) in }
+//        client.account.state.subscribe(onSuccess: { (account_state) in
+//            DispatchQueue.main.async { [weak self] in
+//                guard let self = self else { return }
+//                switch account_state {
+//                case .loggedIn(let session):
+//                    self.logoutButton.isEnabled = true
+//                    self.chatButton.isEnabled =  true
+//                    self.infoLabel.text = "User " + (session.name) + " Logged in"
+//                case .loggedOut:
+//                    self.infoLabel.text = self.introText
+//                    self.logoutButton.isEnabled = true
+//                    self.chatButton.isEnabled =  false
+//                }
+//            }
+//
+//        }) { (_) in }
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -164,35 +164,7 @@ class InitalViewController: BaseViewController {
     func doLogin(_ token:String) {
         
         print("DEMO - login called on client.")
-        client.login(with: token).subscribe(onSuccess: {
-            DispatchQueue.main.async { [weak self] in
-                guard let self = self else { return }
-                self.hideHUD()
-                self.presentAlert(title: "Login Successful")
-                print("DEMO - login susbscribing with token.")
-                print("self.client.account", self.client.account)
-            }
-            
-        }, onError: { error in
-            
-            print(error.localizedDescription)
-
-            
-            // remove to a function
-            let reason: String = {
-                switch error {
-                case LoginResult.failed: return "failed"
-                case LoginResult.invalidToken: return "invalid token"
-                case LoginResult.sessionInvalid: return "session invalid"
-                case LoginResult.expiredToken: return "expired token"
-                case LoginResult.success: return "success"
-                default: return "unknown"
-                }
-            }()
-            
-            print("DEMO - login unsuccessful with \(reason)")
-        })
-        
+        client.login(withAuthToken: token)
     }
     
     
@@ -204,3 +176,25 @@ class InitalViewController: BaseViewController {
 
 }
 
+extension InitalViewController: NXMStitchClientDelegate {
+    func connectionStatusChanged(_ isOnline: Bool) {
+        
+    }
+    
+    func loginStatusChanged(_ user: NXMUser?, loginStatus isLoggedIn: Bool, withError error: Error?)
+    {
+        DispatchQueue.main.async { [weak self] in
+            guard let self = self else { return }
+            self.hideHUD()
+            guard let _ = error else {
+                self.presentAlert(title: "Login Error: \(error?.localizedDescription)")
+                return
+            }
+            
+            self.presentAlert(title: "Login Successful")
+            print("login susbscribing with token.")
+            print("self.client.iser", self.client.user)
+        }
+    }
+    
+}

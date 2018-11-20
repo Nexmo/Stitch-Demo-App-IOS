@@ -7,17 +7,16 @@
 //
 
 import UIKit
-import Stitch
-
+import StitchClient
 
 class ConversationsTableViewController: UITableViewController {
 
-    var sortedConversations:[Conversation]?
+    var sortedConversations:[NXMConversation]?
     /// Nexmo Conversation client
-    let client: ConversationClient = {
-        return ConversationClient.instance
+    let client: NXMStitchClient = {
+        return NXMStitchClient.init()
     }()
-    var selectedConversation:Conversation?
+    var selectedConversation:NXMConversation?
     
     
     override func viewDidLoad() {
@@ -28,50 +27,50 @@ class ConversationsTableViewController: UITableViewController {
         let callButton = UIBarButtonItem(title: "Call", style: .plain, target: self, action: #selector(makePhoneCall(_:)))
         navigationItem.rightBarButtonItems = [addButton, callButton]
         
-        client.conversation.conversations.asObservable.subscribe { [weak self] change in
-            self?.reloadData()
-        }
+//        client.conversation.conversations.asObservable.subscribe { [weak self] change in
+//            self?.reloadData()
+//        }
         
-        client.media.inboundCalls.subscribe { [weak self] call in
-            print("New inbound call from: \(call.from?.user.displayName ?? "unknown")")
-            
-            
-            let names = call.to.map { $0.user.name }
-            let title = "Call from: \(call.from?.user.name ?? "Unknown")"
-            let message = names.joined(separator: ", ")
-            
-            
-            let calling = UIAlertController(
-                title: title,
-                message: message,
-                preferredStyle: .alert
-            )
-            
-            calling.addAction(UIAlertAction(title: "Answer", style: .default) { _ in
-                print("DEMO - Will answer call")
-                
-                call.answer(onSuccess: {
-                    AudioController.shared.requestAudioPermission { [weak self] (success) in
-                        if success {
-                            let storyboard = UIStoryboard(storyboard: .main)
-                            let vc = storyboard.instantiateViewController(withIdentifier: "CallViewController") as! CallViewController
-                            vc.call = call
-                            
-                            let nav = UINavigationController(rootViewController: vc)
-                            self?.present(nav, animated: true, completion: nil)
-                        }
-                    }
-                }, onError: { [weak self] error in
-                    self?.presentAlert(title: "Failed to answer call", message: error.localizedDescription)
-                })
-            })
-            
-            calling.addAction(UIAlertAction(title: "Reject", style: .destructive) { _ in
-                call.reject()
-            })
-            
-            self?.present(calling, animated: true)
-        }
+//        client.media.inboundCalls.subscribe { [weak self] call in
+//            print("New inbound call from: \(call.from?.user.displayName ?? "unknown")")
+//
+//
+//            let names = call.to.map { $0.user.name }
+//            let title = "Call from: \(call.from?.user.name ?? "Unknown")"
+//            let message = names.joined(separator: ", ")
+//            
+//
+//            let calling = UIAlertController(
+//                title: title,
+//                message: message,
+//                preferredStyle: .alert
+//            )
+//            
+//            calling.addAction(UIAlertAction(title: "Answer", style: .default) { _ in
+//                print("DEMO - Will answer call")
+//
+//                call.answer(onSuccess: {
+//                    AudioController.shared.requestAudioPermission { [weak self] (success) in
+//                        if success {
+//                            let storyboard = UIStoryboard(storyboard: .main)
+//                            let vc = storyboard.instantiateViewController(withIdentifier: "CallViewController") as! CallViewController
+//                            vc.call = call
+//
+//                            let nav = UINavigationController(rootViewController: vc)
+//                            self?.present(nav, animated: true, completion: nil)
+//                        }
+//                    }
+//                }, onError: { [weak self] error in
+//                    self?.presentAlert(title: "Failed to answer call", message: error.localizedDescription)
+//                })
+//            })
+//            
+//            calling.addAction(UIAlertAction(title: "Reject", style: .destructive) { _ in
+//                call.reject()
+//            })
+//
+//            self?.present(calling, animated: true)
+//        }
         
         reloadData()
     }
@@ -85,7 +84,7 @@ class ConversationsTableViewController: UITableViewController {
     }
     
     func reloadData() {
-        sortedConversations = client.conversation.conversations.sorted(by: { $0.creationDate.compare($1.creationDate) == .orderedDescending })
+//        sortedConversations = client.conversation.conversations.sorted(by: { $0.creationDate.compare($1.creationDate) == .orderedDescending })
         tableView.reloadData()
     }
 
@@ -116,16 +115,17 @@ class ConversationsTableViewController: UITableViewController {
             
             AudioController.shared.requestAudioPermission { [weak self] (success) in
                 if success {
-                    self?.client.media.callPhone(phoneNumber, onSuccess: { [weak self] result in
-                        let storyboard = UIStoryboard(storyboard: .main)
-                        let vc = storyboard.instantiateViewController(withIdentifier: "CallViewController") as! CallViewController
-                        vc.call = result.call
-                        
-                        let nav = UINavigationController(rootViewController: vc)
-                        self?.present(nav, animated: true, completion: nil)
-                        }, onError: { error in
-                            print("Call user error", error)
-                    })
+                    //TODO: not currently working in Stitch
+//                    self?.client.media.callPhone(phoneNumber, onSuccess: { [weak self] result in
+//                        let storyboard = UIStoryboard(storyboard: .main)
+//                        let vc = storyboard.instantiateViewController(withIdentifier: "CallViewController") as! CallViewController
+//                        vc.call = result.call
+//                        
+//                        let nav = UINavigationController(rootViewController: vc)
+//                        self?.present(nav, animated: true, completion: nil)
+//                        }, onError: { error in
+//                            print("Call user error", error)
+//                    })
                 }
             }            
         }))
@@ -136,19 +136,18 @@ class ConversationsTableViewController: UITableViewController {
     }
 
     func newConversation(_ text:String) {
-        client.conversation.new(with: text, shouldJoin: true, { (conversation) in
-            print("success")
+        client.createConversation(withName: text) { (error, conversation) in
+            guard let _ = error else {
+                return
+            }
             DispatchQueue.main.async { [weak self] in
                 guard let self = self else { return }
                 self.presentAlert(title: "Conversation Created")
-                self.sortedConversations = self.client.conversation.conversations.sorted(by: { $0.creationDate.compare($1.creationDate) == .orderedDescending })
+//                self.sortedConversations = self.client.conversation.conversations.sorted(by: { $0.creationDate.compare($1.creationDate) == .orderedDescending })
                 self.tableView.reloadData()
             }
-        }, onError: { (error) in
-            print("error", error)
-        }, onComplete: {
-            print("done")
-        })
+            
+        }
     }
     // MARK: - Table view data source
 
@@ -169,10 +168,9 @@ class ConversationsTableViewController: UITableViewController {
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath)
-        let conv = sortedConversations![indexPath.row] as Conversation
-        cell.textLabel?.text = conv.name
-        cell.detailTextLabel?.text = conv.uuid
-
+//        let conv = sortedConversations![indexPath.row] as Conversation
+//        cell.textLabel?.text = conv.name
+//        cell.detailTextLabel?.text = conv.uuid
         return cell
     }
     
@@ -181,9 +179,10 @@ class ConversationsTableViewController: UITableViewController {
         guard let conv = sortedConversations?[indexPath.row]  else { return nil }
         
         let leave = UITableViewRowAction(style: .normal, title: "Leave", handler: { (_, indexPath: IndexPath!) -> Void in
-            _ = conv.leave().subscribe(onSuccess: { [weak self] in
-                self?.reloadData()
-            })
+        
+//            _ = conv.leave().subscribe(onSuccess: { [weak self] in
+//                self?.reloadData()
+//            })
         })
         
         leave.backgroundColor = UIColor.red
@@ -192,8 +191,9 @@ class ConversationsTableViewController: UITableViewController {
     }
     
     public override func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {
-        guard let conv = sortedConversations?[indexPath.row]  else { return false }
-        return !(conv.state == .left)
+//        guard let conv = sortedConversations?[indexPath.row]  else { return false }
+//        return !(conv.state == .left)
+        return false
     }
     
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
