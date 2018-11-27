@@ -8,14 +8,14 @@
 
 import UIKit
 import StitchClient
-class ChatTableViewController: UIViewController, UITextFieldDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate {
+import SDWebImage
+class ChatTableViewController: UIViewController, UITextFieldDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate, NXMConversationEventsControllerDelegate {
 
-    
-    let client: NXMStitchClient = {
-        return NXMStitchClient.init()
-    }()
-
-    var conversation: NXMConversation?
+    var conversation: NXMConversationDetails?
+    var eventsController:NXMConversationEventsController?
+    var conversationEvents:[NXMEvent] = []
+    var conversationMessageStatuses: [Int:NXMMessageStatusType] = [:]
+    var memberLookup: [String: NXMMember] = [:]
     let imagePicker = UIImagePickerController()
     
     @IBOutlet weak var containerView: UIView!
@@ -31,7 +31,7 @@ class ChatTableViewController: UIViewController, UITextFieldDelegate, UIImagePic
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        navigationItem.title = conversation?.name
+        navigationItem.title = conversation?.displayName
 
         // Create the info button
         let infoButton = UIButton(type: .infoLight)
@@ -39,11 +39,40 @@ class ChatTableViewController: UIViewController, UITextFieldDelegate, UIImagePic
         let infoBarButtonItem = UIBarButtonItem(customView: infoButton)
         navigationItem.rightBarButtonItem = infoBarButtonItem
         
-
         inputTextField.becomeFirstResponder()
         tableView.keyboardDismissMode = .interactive
+        ConversationManager.shared.client.getConversationDetails((conversation?.uuid)!, onSuccess: { (conversationDetails) in
+//            print(conversationDetails)
+            for member in conversationDetails!.members {
+                print(member)
+                self.memberLookup[member.memberId] = member
+            }
+        }) { (error) in
+            print(error)
+        }
         
-        setupKeyboardObservers()
+        ConversationManager.shared.client.getEventsInConversation((conversation?.uuid)!, onSuccess: { (events) in
+            DispatchQueue.main.async {
+                guard let _ = events as? [NXMEvent] else {
+                    return
+                }
+                for event in events! {
+                    let nxmEvent = (event as! NXMEvent)
+                    if nxmEvent.type != NXMEventType.messageStatus {
+                        self.conversationEvents.append(nxmEvent)
+                    } else {
+                        let statusEvent = event as! NXMMessageStatusEvent
+                        self.conversationMessageStatuses[statusEvent.eventId] = statusEvent.status
+                    }
+                }
+                self.tableView.reloadData()
+            }
+        }) { (error) in
+            print(error)
+        }
+        
+      
+//        setupKeyboardObservers()
     
     }
     
@@ -109,14 +138,15 @@ class ChatTableViewController: UIViewController, UITextFieldDelegate, UIImagePic
         }
         
         // send method
-        conversation?.sendAttachment(of: .image, withName: "My Image", data: data, completion: { [weak self] (error) in
-            guard let _ = error else {
-                return
-            }
-            self?.tableView.reloadData()
-            self?.inputTextField.text = nil
-            self?.view.endEditing(true)
-        })
+        //TODO
+//        conversation?.sendAttachment(of: .image, withName: "My Image", data: data, completion: { [weak self] (error) in
+//            guard let _ = error else {
+//                return
+//            }
+//            self?.tableView.reloadData()
+//            self?.inputTextField.text = nil
+//            self?.view.endEditing(true)
+//        })
         
         dismiss(animated: true, completion: nil)
     }
@@ -124,15 +154,15 @@ class ChatTableViewController: UIViewController, UITextFieldDelegate, UIImagePic
     
     func handleSend() {
        
-        // send metho
-        conversation?.sendText(inputTextField.text!, completion: {[weak self] (error) in
-            guard let _ = error else {
-                return
-            }
-            self?.tableView.reloadData()
-            self?.inputTextField.text = nil
-            self?.view.endEditing(true)
-        })
+        // TODO
+//        conversation?.sendText(inputTextField.text!, completion: {[weak self] (error) in
+//            guard let _ = error else {
+//                return
+//            }
+//            self?.tableView.reloadData()
+//            self?.inputTextField.text = nil
+//            self?.view.endEditing(true)
+//        })
 
     }
     
@@ -224,7 +254,7 @@ extension ChatTableViewController: UITableViewDelegate, UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return 0;//conversation!.events.count
+        return self.conversationEvents.count
     }
     
     
@@ -233,56 +263,75 @@ extension ChatTableViewController: UITableViewDelegate, UITableViewDataSource {
         cell.backgroundColor = UIColor.white
         cell.imageView?.image = nil
         cell.accessoryType = UITableViewCellAccessoryType.none
+        
+        let event = self.conversationEvents[indexPath.row]
 
-//        let event = conversation?.events[indexPath.row]
-//
-//        switch event {
-//        case is ImageEvent:
-//            let imageEvent = (event as! ImageEvent)
-//            guard let imagePath = imageEvent.path(of: IPS.ImageType.thumbnail) else {
-//                break
-//            }
-//            cell.imageView?.image = UIImage(contentsOfFile: imagePath)
-//            cell.textLabel?.text = (imageEvent.from?.name)! + " uploaded a photo"
-//            cell.detailTextLabel?.text = (event?.createDate.description)!
-//            break
-//        case is TextEvent:
-//            let textEvent = (event as! TextEvent)
-//            //TODO: Is this how we get the seen receipt?
-//            let receipt = textEvent.receiptForMember(textEvent.fromMember!)
-//            if (receipt != nil) {
-//                if (receipt?.state == ReceiptRecord.State.seen) {
-//                    cell.accessoryType = UITableViewCellAccessoryType.checkmark
-//                }
-//            }
-//            
-//            cell.textLabel?.text = textEvent.text
-//            cell.detailTextLabel?.text = (textEvent.from?.name)! + " " + (event?.createDate.description)!
-//            break
-//        case is MediaEvent:
-//            let mediaEvent = (event as! MediaEvent)
-//            
-//            cell.textLabel?.text =  (mediaEvent.from?.name)! + " " + (mediaEvent.enabled ? "enabled audio" : "disabled audio")
-//            cell.detailTextLabel?.text = mediaEvent.createDate.description
-//            break
-//        case is MemberJoinedEvent:
-//            let memberJoinedEvent = (event as! MemberJoinedEvent)
-//            cell.textLabel?.text =  (memberJoinedEvent.from?.name)! + " joined"
-//            cell.detailTextLabel?.text = memberJoinedEvent.createDate.description
-//            break
-//        case is MemberInvitedEvent:
-//            let memberInvited = (event as! MemberInvitedEvent)
-//            cell.textLabel?.text =  (memberInvited.from?.name)! + " invited"
-//            cell.detailTextLabel?.text = memberInvited.createDate.description
-//            break
-//        case is MemberLeftEvent:
-//            let memberLeft = (event as! MemberLeftEvent)
-//            cell.textLabel?.text =  (memberLeft.from?.name)! + " left"
-//            cell.detailTextLabel?.text = memberLeft.createDate.description
-//            break
-//        default:
-//            cell.textLabel?.text = ""
-//        }
+        switch event {
+        case is NXMTextEvent:
+            let textEvent = (event as! NXMTextEvent)
+            cell.textLabel?.text = textEvent.text
+            break
+        case is NXMImageEvent:
+            let imageEvent = (event as! NXMImageEvent)
+            //TODO: crash
+//            let imageURL = imageEvent.thumbnailImage.url
+//            cell.imageView?.sd_setImage(with: imageURL as URL, placeholderImage: nil, options: [], progress: nil, completed: nil)
+            break
+            
+
+        case is NXMMediaEvent:
+            let mediaEvent = (event as! NXMMediaEvent)
+            let isAudioEnabled = mediaEvent.mediaSettings.isEnabled
+            if let member = memberLookup[event.fromMemberId] {
+                cell.textLabel?.text =  member.name + " " + (isAudioEnabled ? "enabled audio" : "disabled audio")
+            }
+            break
+        case is NXMMemberEvent:
+            let memberEvent = (event as! NXMMemberEvent)
+            var statusString:String?
+
+            switch memberEvent.state {
+            case .invited:
+                statusString = "invited"
+                break
+            case .joined:
+                statusString = "joined"
+                break
+            case .left:
+                statusString = "left"
+            }
+            if let member = memberLookup[event.fromMemberId] {
+                cell.textLabel?.text = member.name + " " + statusString!
+            }
+//            cell.textLabel?.text =  (memberEvent.from?.name)! + " joined"
+            break
+        default:
+            cell.textLabel?.text = ""
+        }
+        //TODO stylize message status
+        var statusStr = ""
+        if self.conversationMessageStatuses[event.sequenceId] != nil {
+            let status = self.conversationMessageStatuses[event.sequenceId] as! NXMMessageStatusType
+            switch status {
+            case .seen:
+                statusStr = "Seen"
+                break
+            case .none:
+                statusStr = "none"
+                break
+            case .delivered:
+                statusStr = "delivered"
+                break
+            case .deleted:
+                statusStr = "deleted"
+                break
+            }
+        }
+        
+        if let member = memberLookup[event.fromMemberId] {
+            cell.detailTextLabel?.text = statusStr + " " + member.name + " " + event.creationDate.description
+        }
+        
 
         return cell
     }

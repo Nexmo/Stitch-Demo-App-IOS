@@ -13,14 +13,9 @@ import SwiftyJSON
 class ConversationInfoViewController: UIViewController, MemberCellDelegate, UserCellDelegate {
    
     
-    /// Nexmo Conversation client
-    let client: NXMStitchClient = {
-        return NXMStitchClient.init()
-    }()
-    
     @IBOutlet weak var tableView: UITableView!
     @IBOutlet weak var joinCallButton: UIButton!
-    var conversation: NXMConversation?
+    var conversation: NXMConversationDetails?
     var availableUsers = [JSON]()
     var allUsers:JSON?
     var currentCall:NXMCall?
@@ -172,13 +167,14 @@ class ConversationInfoViewController: UIViewController, MemberCellDelegate, User
             return
         }
         
-        conversation?.addMember(withUserId: user["name"].stringValue, completion: { [weak self] (error, memeber) in
-            guard let _ = error else {
-                self?.presentAlert(title: "Error Adding User", message: error!.localizedDescription)
-                return
-            }
-            self?.presentAlert(title: "User Added")
-        })
+            //TODO
+//        conversation?.addMember(withUserId: user["name"].stringValue, completion: { [weak self] (error, memeber) in
+//            guard let _ = error else {
+//                self?.presentAlert(title: "Error Adding User", message: error!.localizedDescription)
+//                return
+//            }
+//            self?.presentAlert(title: "User Added")
+//        })
     }
     
     private func connectAudio() {
@@ -219,13 +215,14 @@ class ConversationInfoViewController: UIViewController, MemberCellDelegate, User
     }
     
     private func invite(userId: String?, username: String, withAudio audio: Bool) {
-        conversation?.addMember(withUserId: userId!, completion: { [weak self] (error, memeber) in
-            guard let _ = error else {
-                return
-            }
-            self?.presentAlert(title: "Error", message: "Failed to invite user")
-
-        })
+        //TODO
+//        conversation?.addMember(withUserId: userId!, completion: { [weak self] (error, memeber) in
+//            guard let _ = error else {
+//                return
+//            }
+//            self?.presentAlert(title: "Error", message: "Failed to invite user")
+//
+//        })
     }
 
 }

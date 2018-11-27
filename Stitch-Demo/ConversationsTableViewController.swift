@@ -11,11 +11,9 @@ import StitchClient
 
 class ConversationsTableViewController: UITableViewController {
 
-    var sortedConversations:[NXMConversation]?
+    var conversations:[NXMConversationDetails]?
     /// Nexmo Conversation client
-    let client: NXMStitchClient = {
-        return NXMStitchClient.init()
-    }()
+    
     var selectedConversation:NXMConversation?
     
     
@@ -26,6 +24,20 @@ class ConversationsTableViewController: UITableViewController {
         let addButton = UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(createConversation(_:)))
         let callButton = UIBarButtonItem(title: "Call", style: .plain, target: self, action: #selector(makePhoneCall(_:)))
         navigationItem.rightBarButtonItems = [addButton, callButton]
+        
+        guard let currentUser = ConversationManager.shared.currentUser else {
+            return
+        }
+        
+        ConversationManager.shared.client.getConversationsForUser(currentUser.uuid, onSuccess: { (conversationDetails, pageInfo) in
+            DispatchQueue.main.async { [weak self] in
+                self?.conversations = conversationDetails
+                self?.reloadData()
+            }
+
+        }) { (error) in
+            print("error",error)
+        }
         
 //        client.conversation.conversations.asObservable.subscribe { [weak self] change in
 //            self?.reloadData()
@@ -136,18 +148,7 @@ class ConversationsTableViewController: UITableViewController {
     }
 
     func newConversation(_ text:String) {
-        client.createConversation(withName: text) { (error, conversation) in
-            guard let _ = error else {
-                return
-            }
-            DispatchQueue.main.async { [weak self] in
-                guard let self = self else { return }
-                self.presentAlert(title: "Conversation Created")
-//                self.sortedConversations = self.client.conversation.conversations.sorted(by: { $0.creationDate.compare($1.creationDate) == .orderedDescending })
-                self.tableView.reloadData()
-            }
-            
-        }
+        
     }
     // MARK: - Table view data source
 
@@ -156,27 +157,30 @@ class ConversationsTableViewController: UITableViewController {
     }
 
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        guard let _ = sortedConversations else {
+        guard let conversations = conversations else {
             tableView.setEmptyMessage("No Conversations")
             return 0
         }
         
         tableView.restore()
-        return sortedConversations!.count
+        return conversations.count
     }
 
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath)
-//        let conv = sortedConversations![indexPath.row] as Conversation
-//        cell.textLabel?.text = conv.name
-//        cell.detailTextLabel?.text = conv.uuid
+        guard let _ = conversations, let conv = conversations?[indexPath.row], let displayName = conv.displayName else {
+            cell.textLabel?.text = ""
+            return cell
+        }
+        cell.textLabel?.text = displayName
+        cell.detailTextLabel?.text = conv.uuid
         return cell
     }
     
     override func tableView(_ tableView: UITableView, editActionsForRowAt indexPath: IndexPath) -> [UITableViewRowAction]? {
         
-        guard let conv = sortedConversations?[indexPath.row]  else { return nil }
+        guard let conv = conversations?[indexPath.row]  else { return nil }
         
         let leave = UITableViewRowAction(style: .normal, title: "Leave", handler: { (_, indexPath: IndexPath!) -> Void in
         
@@ -205,10 +209,10 @@ class ConversationsTableViewController: UITableViewController {
 
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if segue.identifier == "viewConversation" {
-            guard let row = (sender as? IndexPath)?.row, let conv = sortedConversations?[row] else {
+            guard let row = (sender as? IndexPath)?.row, let _ = conversations else {
                 return
             }
-            
+            let conv = conversations![row]
             let chatVC = segue.destination as? ChatTableViewController
             chatVC?.conversation = conv
         }

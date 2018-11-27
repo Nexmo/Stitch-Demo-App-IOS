@@ -25,6 +25,7 @@
 		45F4525120CEFF8A0051294A /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 45F4525020CEFF8A0051294A /* Assets.xcassets */; };
 		45F4525420CEFF8A0051294A /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 45F4525220CEFF8A0051294A /* LaunchScreen.storyboard */; };
 		45F6643B20D12756002D8F6E /* Nexmo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45F6643A20D12756002D8F6E /* Nexmo.swift */; };
+		5681873721A4618000E899A4 /* ConversationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5681873621A4618000E899A4 /* ConversationManager.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -49,6 +50,7 @@
 		45F4525520CEFF8A0051294A /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		45F6643A20D12756002D8F6E /* Nexmo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Nexmo.swift; sourceTree = "<group>"; };
 		56751D2221A31D0C004C4F13 /* Stitch-Demo-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Stitch-Demo-Bridging-Header.h"; sourceTree = "<group>"; };
+		5681873621A4618000E899A4 /* ConversationManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConversationManager.swift; sourceTree = "<group>"; };
 		6F463F19BC92C501B9D31ED9 /* Pods-Stitch-Demo.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Stitch-Demo.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Stitch-Demo/Pods-Stitch-Demo.debug.xcconfig"; sourceTree = "<group>"; };
 		96D04C1DA33D6B6489309EC2 /* Pods-Stitch-Demo.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Stitch-Demo.release.xcconfig"; path = "Pods/Target Support Files/Pods-Stitch-Demo/Pods-Stitch-Demo.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -113,6 +115,7 @@
 				450DB76020DBCC6800BBCCC5 /* AudioController.swift */,
 				45F10CA92110774E0032CB1C /* BaseViewController.swift */,
 				56751D2221A31D0C004C4F13 /* Stitch-Demo-Bridging-Header.h */,
+				5681873621A4618000E899A4 /* ConversationManager.swift */,
 			);
 			path = "Stitch-Demo";
 			sourceTree = "<group>";
@@ -256,6 +259,7 @@
 				"${SRCROOT}/Pods/Target Support Files/Pods-Stitch-Demo/Pods-Stitch-Demo-frameworks.sh",
 				"${BUILT_PRODUCTS_DIR}/MBProgressHUD/MBProgressHUD.framework",
 				"${PODS_ROOT}/MiniRTC_Release/iOSFramework.framework",
+				"${BUILT_PRODUCTS_DIR}/SDWebImage/SDWebImage.framework",
 				"${BUILT_PRODUCTS_DIR}/StitchClient/StitchClient.framework",
 				"${BUILT_PRODUCTS_DIR}/StitchCore/StitchCore.framework",
 				"${BUILT_PRODUCTS_DIR}/SwiftyJSON/SwiftyJSON.framework",
@@ -264,6 +268,7 @@
 			outputPaths = (
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/MBProgressHUD.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/iOSFramework.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/SDWebImage.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/StitchClient.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/StitchCore.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/SwiftyJSON.framework",
@@ -293,6 +298,7 @@
 				45E9820820D18A07003B6C7B /* ChatTableViewController.swift in Sources */,
 				45128DFF20D2DDB700E32222 /* ConversationInfoViewController.swift in Sources */,
 				450DB75F20DBCBBD00BBCCC5 /* CallViewController.swift in Sources */,
+				5681873721A4618000E899A4 /* ConversationManager.swift in Sources */,
 				45128DFB20D2C47500E32222 /* UITableView+Extension.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

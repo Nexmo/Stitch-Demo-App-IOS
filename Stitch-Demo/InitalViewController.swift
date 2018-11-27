@@ -10,7 +10,7 @@ import UIKit
 import StitchClient
 import SwiftyJSON
 
-class InitalViewController: BaseViewController {
+class InitalViewController: UIViewController {
 
     let introText = "Welcome to Awesome Chat. Click the Get Started button!"
 
@@ -36,6 +36,16 @@ class InitalViewController: BaseViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        ConversationManager.shared.client.setDelgate(self as! NXMStitchCoreDelegate)
+        guard let user = ConversationManager.shared.client.getUser() else {
+            self.infoLabel.text = self.introText
+            self.logoutButton.isEnabled = true
+            self.chatButton.isEnabled =  false
+            return
+        }
+        self.logoutButton.isEnabled = true
+        self.chatButton.isEnabled =  true
+        self.infoLabel.text = "User " + (user.name) + " Logged in"
 //        client.account.state.subscribe(onSuccess: { (account_state) in
 //            DispatchQueue.main.async { [weak self] in
 //                guard let self = self else { return }
@@ -64,7 +74,7 @@ class InitalViewController: BaseViewController {
     }
 
     @IBAction func logoutAction(_ sender: Any) {
-        client.logout()
+        ConversationManager.shared.client.logout()
         infoLabel.text = introText
         
         let alert = UIAlertController(title: "Logout Successful", message: nil, preferredStyle:.alert)
@@ -105,7 +115,7 @@ class InitalViewController: BaseViewController {
                         Nexmo.shared.authenticateUser(textField.text!) { [weak self] (error, json) in
                             self?.hideHUD()
                             let token = json["user_jwt"].stringValue
-                            print(token)
+                            print("using token:",token)
                             self?.doLogin(token)
                         }
                     }
@@ -143,6 +153,8 @@ class InitalViewController: BaseViewController {
 
         showHUD()
         Nexmo.shared.getUsers { [weak self] (error, json) in
+            DispatchQueue.main.async { [weak self] in
+
             self?.hideHUD()
             for (_, user) in json {
                 print(user)
@@ -158,13 +170,14 @@ class InitalViewController: BaseViewController {
             }
             alert.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
             self?.present(alert, animated: true)
+            }
         }
     }
     
     func doLogin(_ token:String) {
         
         print("DEMO - login called on client.")
-        client.login(withAuthToken: token)
+        ConversationManager.shared.client.login(withAuthToken: token)
     }
     
     
@@ -176,7 +189,7 @@ class InitalViewController: BaseViewController {
 
 }
 
-extension InitalViewController: NXMStitchClientDelegate {
+extension InitalViewController: NXMStitchCoreDelegate {
     func connectionStatusChanged(_ isOnline: Bool) {
         
     }
@@ -186,14 +199,19 @@ extension InitalViewController: NXMStitchClientDelegate {
         DispatchQueue.main.async { [weak self] in
             guard let self = self else { return }
             self.hideHUD()
-            guard let _ = error else {
-                self.presentAlert(title: "Login Error: \(error?.localizedDescription)")
+            guard let user = user else {
+                self.presentAlert(title: "Could not login")
                 return
             }
             
             self.presentAlert(title: "Login Successful")
+            self.infoLabel.text = "User " + (user.name) + " Logged in"
+            self.logoutButton.isEnabled = true
+            self.chatButton.isEnabled =  true
+            
             print("login susbscribing with token.")
-            print("self.client.iser", self.client.user)
+            print("user", user.name)
+            ConversationManager.shared.currentUser = user
         }
     }
     

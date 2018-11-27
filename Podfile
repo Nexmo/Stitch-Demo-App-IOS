@@ -10,4 +10,5 @@ target 'Stitch-Demo' do
   	pod 'StitchClient'
 	pod 'SwiftyJSON'
 	pod 'MBProgressHUD', '~> 1.1.0'
+	pod 'SDWebImage', '~> 4.0'
 end
