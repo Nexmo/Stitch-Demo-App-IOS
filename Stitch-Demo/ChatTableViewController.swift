@@ -17,6 +17,7 @@ class ChatTableViewController: UIViewController, UITextFieldDelegate, UIImagePic
     var conversationMessageStatuses: [Int:NXMMessageStatusType] = [:]
     var memberLookup: [String: NXMMember] = [:]
     let imagePicker = UIImagePickerController()
+    var memberId:String?
     
     @IBOutlet weak var containerView: UIView!
     
@@ -41,10 +42,14 @@ class ChatTableViewController: UIViewController, UITextFieldDelegate, UIImagePic
         
         inputTextField.becomeFirstResponder()
         tableView.keyboardDismissMode = .interactive
+        ConversationManager.shared.client.setDelgate(self)
+        
         ConversationManager.shared.client.getConversationDetails((conversation?.uuid)!, onSuccess: { (conversationDetails) in
-//            print(conversationDetails)
             for member in conversationDetails!.members {
                 print(member)
+                if member.name == ConversationManager.shared.currentUser?.name {
+                    self.memberId = member.memberId
+                }
                 self.memberLookup[member.memberId] = member
             }
         }) { (error) in
@@ -115,10 +120,23 @@ class ChatTableViewController: UIViewController, UITextFieldDelegate, UIImagePic
     }
     
     @IBAction func sendText(_ sender: Any) {
+        guard let message = inputTextField.text, let conv_uuid = self.conversation?.uuid, let fromMemberId = self.memberId else {
+            return
+        }
+        ConversationManager.shared.client.sendText(message, conversationId: conv_uuid, fromMemberId: fromMemberId, onSuccess: { (success) in
+            DispatchQueue.main.async { [weak self] in
+                self!.inputTextField.text = ""
+            }
+        }) { (error) in
+            print(error)
+        }
     }
     
     func setupKeyboardObservers() {
        
+    }
+    func addObservers() {
+//        NotificationCenter.default.add
     }
     
     //MARK: TextField Delegate
@@ -308,6 +326,7 @@ extension ChatTableViewController: UITableViewDelegate, UITableViewDataSource {
         default:
             cell.textLabel?.text = ""
         }
+        
         //TODO stylize message status
         var statusStr = ""
         if self.conversationMessageStatuses[event.sequenceId] != nil {
@@ -345,6 +364,82 @@ extension ChatTableViewController: UITableViewDelegate, UITableViewDataSource {
     }
 }
 
+extension ChatTableViewController:NXMStitchCoreDelegate {
+    func connectionStatusChanged(_ isOnline: Bool) {
+        
+    }
+    
+    func loginStatusChanged(_ user: NXMUser?, loginStatus isLoggedIn: Bool, withError error: Error?) {
+        
+    }
+    
+    func memberJoined(_ memberEvent: NXMMemberEvent) {
+        
+    }
+    
+    func memberInvited(_ memberEvent: NXMMemberEvent) {
+        
+    }
+    
+    func memberRemoved(_ memberEvent: NXMMemberEvent) {
+        
+    }
+    
+    func textRecieved(_ textEvent: NXMTextEvent) {
+        
+        if textEvent.conversationId != self.conversation?.uuid {
+            return
+        }
+        
+        if self.conversationEvents.filter({ $0.sequenceId == textEvent.sequenceId }).count == 0 {
+            self.conversationEvents.append(textEvent)
+            self.tableView.reloadData()
+        }
+        
+        //TODO: mark textEvent as seen
+
+    }
+    
+    func textDelivered(_ statusEvent: NXMMessageStatusEvent) {
+        updateMessageStatus(statusEvent)
+    }
+    
+    func textSeen(_ statusEvent: NXMMessageStatusEvent) {
+        updateMessageStatus(statusEvent)
+    }
+    
+    func messageDeleted(_ statusEvent: NXMMessageStatusEvent) {
+        updateMessageStatus(statusEvent)
+    }
+    
+    func imageSeen(_ statusEvent: NXMMessageStatusEvent) {
+        updateMessageStatus(statusEvent)
+    }
+    
+    func imageDelivered(_ statusEvent: NXMMessageStatusEvent) {
+        updateMessageStatus(statusEvent)
+    }
+    
+    func textTyping(on textTypingEvent: NXMTextTypingEvent) {
+        
+    }
+    
+    func textTypingOff(_ textTypingEvent: NXMTextTypingEvent) {
+        
+    }
+    
+    func imageRecieved(_ imageEvent: NXMImageEvent) {
+        
+    }
+    
+    //TODO: find better way than reloading data
+    func updateMessageStatus(_ statusEvent: NXMMessageStatusEvent) {
+        self.conversationMessageStatuses[statusEvent.eventId] = statusEvent.status
+        self.tableView.reloadData()
+    }
+    
+
+}
 
 class ContainerViewController:UIViewController {
     
