@@ -20,7 +20,7 @@
 		45E9820820D18A07003B6C7B /* ChatTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45E9820720D18A07003B6C7B /* ChatTableViewController.swift */; };
 		45F10CAA2110774E0032CB1C /* BaseViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45F10CA92110774E0032CB1C /* BaseViewController.swift */; };
 		45F4524A20CEFF880051294A /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45F4524920CEFF880051294A /* AppDelegate.swift */; };
-		45F4524C20CEFF880051294A /* InitalViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45F4524B20CEFF880051294A /* InitalViewController.swift */; };
+		45F4524C20CEFF880051294A /* LoginViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45F4524B20CEFF880051294A /* LoginViewController.swift */; };
 		45F4524F20CEFF880051294A /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 45F4524D20CEFF880051294A /* Main.storyboard */; };
 		45F4525120CEFF8A0051294A /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 45F4525020CEFF8A0051294A /* Assets.xcassets */; };
 		45F4525420CEFF8A0051294A /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 45F4525220CEFF8A0051294A /* LaunchScreen.storyboard */; };
@@ -43,7 +43,7 @@
 		45F10CA92110774E0032CB1C /* BaseViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseViewController.swift; sourceTree = "<group>"; };
 		45F4524620CEFF880051294A /* Stitch-Demo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Stitch-Demo.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		45F4524920CEFF880051294A /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
-		45F4524B20CEFF880051294A /* InitalViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InitalViewController.swift; sourceTree = "<group>"; };
+		45F4524B20CEFF880051294A /* LoginViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginViewController.swift; sourceTree = "<group>"; };
 		45F4524E20CEFF880051294A /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		45F4525020CEFF8A0051294A /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		45F4525320CEFF8A0051294A /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
@@ -102,7 +102,7 @@
 				45128DF920D2C46000E32222 /* Extensions */,
 				45F6643A20D12756002D8F6E /* Nexmo.swift */,
 				45F4524920CEFF880051294A /* AppDelegate.swift */,
-				45F4524B20CEFF880051294A /* InitalViewController.swift */,
+				45F4524B20CEFF880051294A /* LoginViewController.swift */,
 				45449D5E20D1766C00EF34E2 /* ConversationsTableViewController.swift */,
 				45E9820720D18A07003B6C7B /* ChatTableViewController.swift */,
 				45128DFE20D2DDB700E32222 /* ConversationInfoViewController.swift */,
@@ -286,7 +286,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				450DB76120DBCC6800BBCCC5 /* AudioController.swift in Sources */,
-				45F4524C20CEFF880051294A /* InitalViewController.swift in Sources */,
+				45F4524C20CEFF880051294A /* LoginViewController.swift in Sources */,
 				45F6643B20D12756002D8F6E /* Nexmo.swift in Sources */,
 				4543877820F398DF00E09FB2 /* ProgressHUD+extensions.swift in Sources */,
 				451EB24620D92E4C0022F32A /* UIViewController+Extensions.swift in Sources */,

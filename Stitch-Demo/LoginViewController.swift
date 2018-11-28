@@ -10,7 +10,7 @@ import UIKit
 import StitchClient
 import SwiftyJSON
 
-class InitalViewController: UIViewController {
+class LoginViewController: UIViewController {
 
     let introText = "Welcome to Awesome Chat. Click the Get Started button!"
 
@@ -189,7 +189,7 @@ class InitalViewController: UIViewController {
 
 }
 
-extension InitalViewController: NXMStitchCoreDelegate {
+extension LoginViewController: NXMStitchCoreDelegate {
     func connectionStatusChanged(_ isOnline: Bool) {
         
     }

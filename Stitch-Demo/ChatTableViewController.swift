@@ -141,48 +141,51 @@ class ChatTableViewController: UIViewController, UITextFieldDelegate, UIImagePic
     
     //MARK: TextField Delegate
     func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
+        guard let conv_uuid = self.conversation?.uuid, let fromMemberId = self.memberId else {
+            return true
+        }
+        ConversationManager.shared.client.startTyping(conv_uuid, memberId: fromMemberId, onSuccess: {
+            print("success")
+        }) { (error) in
+            print(error)
+        }
         return true
     }
     
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        guard let conv_uuid = self.conversation?.uuid, let fromMemberId = self.memberId else {
+            return true
+        }
+        ConversationManager.shared.client.stopTyping(conv_uuid, memberId: fromMemberId, onSuccess: {
+            print("success")
+        }) { (error) in
+            print(error)
+        }
         return true
     }
     
     //Mark UIImagePickerControllerDelegate
     func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String : Any]) {
     
-        guard let image = info[UIImagePickerControllerOriginalImage] as? UIImage, let data = UIImageJPEGRepresentation(image, 1.0) else {
+        guard let image = info[UIImagePickerControllerOriginalImage] as? UIImage, let data = UIImagePNGRepresentation(image), let conv_uuid = self.conversation?.uuid, let fromMemberId = self.memberId  else {
             return
         }
-        
-        // send method
-        //TODO
-//        conversation?.sendAttachment(of: .image, withName: "My Image", data: data, completion: { [weak self] (error) in
-//            guard let _ = error else {
-//                return
-//            }
-//            self?.tableView.reloadData()
-//            self?.inputTextField.text = nil
-//            self?.view.endEditing(true)
-//        })
+        let filename = UUID().uuidString
+        ConversationManager.shared.client.sendImage(withName: "\(filename).png", image: data, conversationId: conv_uuid, fromMemberId: fromMemberId, onSuccess: { [weak self] (success) in
+            DispatchQueue.main.async { [weak self] in
+                self?.tableView.reloadData()
+                self?.inputTextField.text = nil
+                self?.view.endEditing(true)
+            }
+        }) { [weak self] (error) in
+            print(error)
+            self?.inputTextField.text = nil
+            self?.view.endEditing(true)
+        }
         
         dismiss(animated: true, completion: nil)
     }
 
-    
-    func handleSend() {
-       
-        // TODO
-//        conversation?.sendText(inputTextField.text!, completion: {[weak self] (error) in
-//            guard let _ = error else {
-//                return
-//            }
-//            self?.tableView.reloadData()
-//            self?.inputTextField.text = nil
-//            self?.view.endEditing(true)
-//        })
-
-    }
     
     func handleKeyboardWillShow(_ notification: Notification) {
         let keyboardFrame = (notification.userInfo?[UIKeyboardFrameEndUserInfoKey] as AnyObject).cgRectValue
@@ -199,46 +202,6 @@ class ChatTableViewController: UIViewController, UITextFieldDelegate, UIImagePic
         bottomLayoutContraint?.constant = 0
 
         UIView.animate(withDuration: keyboardDuration!, animations: view.layoutIfNeeded)
-    }
-    
-    
-    private func handleTypingChangedEvent(member: NXMMember, isTyping: Bool) {
-        /* make sure it is not this user typing */
-//        if !member.user.isMe {
-//            let name = member.user.name
-//
-//            if isTyping {
-//                whoIsTyping.insert(name)
-//            } else {
-//                whoIsTyping.remove(name)
-//            }
-//
-//            refreshTypingIndicatorLabel()
-//        }
-    }
-    
-    func refreshTypingIndicatorLabel(){
-        if !whoIsTyping.isEmpty {
-            var caption = whoIsTyping.joined(separator: ", ")
-            
-            if whoIsTyping.count == 1 {
-                caption += " is typing..."
-            } else {
-                caption += " are typing..."
-            }
-            
-            DispatchQueue.main.async { [weak self] in
-                print(caption)
-                self?.isTypingLabel.text = caption
-            }
-            
-            
-        } else {
-            
-            DispatchQueue.main.async { [weak self] in
-                self?.isTypingLabel.text = ""
-            }
-        }
     }
     
 
@@ -327,28 +290,17 @@ extension ChatTableViewController: UITableViewDelegate, UITableViewDataSource {
             cell.textLabel?.text = ""
         }
         
-        //TODO stylize message status
-        var statusStr = ""
+        //Mark cell's as `seen` by showing a checkmark
+        cell.accessoryType = .none
         if self.conversationMessageStatuses[event.sequenceId] != nil {
-            let status = self.conversationMessageStatuses[event.sequenceId] as! NXMMessageStatusType
-            switch status {
-            case .seen:
-                statusStr = "Seen"
-                break
-            case .none:
-                statusStr = "none"
-                break
-            case .delivered:
-                statusStr = "delivered"
-                break
-            case .deleted:
-                statusStr = "deleted"
-                break
+            let status = self.conversationMessageStatuses[event.sequenceId]
+            if status == .seen {
+                cell.accessoryType = .checkmark
             }
         }
         
         if let member = memberLookup[event.fromMemberId] {
-            cell.detailTextLabel?.text = statusStr + " " + member.name + " " + event.creationDate.description
+            cell.detailTextLabel?.text = member.name + " " + event.creationDate.description
         }
         
 
@@ -422,9 +374,26 @@ extension ChatTableViewController:NXMStitchCoreDelegate {
     
     func textTyping(on textTypingEvent: NXMTextTypingEvent) {
         
+        if textTypingEvent.conversationId != self.conversation?.uuid {
+            return
+        }
+        if textTypingEvent.fromMemberId == self.memberId {
+            return
+        }
+        if textTypingEvent.status  == .off {
+            self.isTypingLabel.isHidden = true
+        }
+        guard let member = memberLookup[textTypingEvent.fromMemberId] else {
+            return
+        }
+        self.isTypingLabel.text = "\(member.name!) is typing"
+        self.isTypingLabel.isHidden = false
+
     }
     
     func textTypingOff(_ textTypingEvent: NXMTextTypingEvent) {
+        print("textTypingOff")
+        self.isTypingLabel.isHidden = true
         
     }
     
